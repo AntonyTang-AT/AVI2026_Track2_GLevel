@@ -72,7 +72,7 @@ for e in ${EXP_IDS}; do
     if [[ "${SKIP_TRAIN:-0}" != "1" ]]; then
       echo "[ablation] TRAIN exp=${e} seed=${s}" >&2
       # shellcheck disable=2086
-      "${PY}" "${_ROOT}/train_task2_glevel.py" \
+      "${PY}" "${_ROOT}/python/train_task2_glevel.py" \
         --train_csv "${SUP}/train_data.csv" \
         --val_csv "${SUP}/val_data.csv" \
         --test_csv "${TEST_CSV}" \

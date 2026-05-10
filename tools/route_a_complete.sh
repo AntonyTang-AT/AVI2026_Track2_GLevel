@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 路线 A：训练/提交前的数据与特征补全预检（与 vote_train_glevel.sh 路径变量一致）。
+# 路线 A：训练/提交前的数据与特征补全预检（与 scripts/glevel_train.sh 路径变量一致）。
 # 用法：在工程根目录先 export 与训练相同的环境变量，再执行：
 #   bash tools/route_a_complete.sh
 # 退出码 0 表示检查通过；2 表示存在缺失，需补提特征或按 tools/extract_nanbeige_splits.example.sh 提取。
@@ -9,7 +9,7 @@ _SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "${PROJECT_ROOT:-$(cd "$_SCRIPT_DIR/.." && pwd)}"
 PYTHON="${PYTHON:-python}"
 
-# 与 vote_train_glevel.sh 相同路径变量（含 Nanbeige / Anton 布局）
+# 与 scripts/glevel_train.sh 相同路径变量（含 Nanbeige / Anton 布局）
 # shellcheck source=glevel_paths.inc.sh
 . "${_SCRIPT_DIR}/glevel_paths.inc.sh"
 
@@ -72,5 +72,5 @@ if [ "$ERR" != "0" ]; then
   exit 2
 fi
 
-echo "[route_a] 全部检查通过。可进行 bash vote_train_glevel.sh 或 K 折。"
+echo "[route_a] 全部检查通过。可进行 bash scripts/glevel_train.sh 或 K 折。"
 exit 0

@@ -99,7 +99,7 @@ def main():
             "请向赛方确认测试特征路径（常见为 .../test_feature），或自行对测试集跑提取脚本。\n"
             "训练完成后仅导出预测时：\n"
             "  export FEAT_TEST=/path/to/test_feature\n"
-            "  python train_task2_glevel.py --only_test --test_model best_model_glevel.pth ...",
+            "  python python/train_task2_glevel.py --only_test --test_model best_model_glevel.pth ...",
             file=sys.stderr,
         )
         sys.exit(1)

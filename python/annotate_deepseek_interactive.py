@@ -21,8 +21,8 @@ DeepSeek 交互式管线（按用户指定顺序）：
   跳过 train/val，直接择优；默认产物与源报告同目录 ``*_peer_sel*``，不占用正在跑的 run 文件。
 
 示例：
-  python annotate_deepseek_interactive.py -o deepseek_interactive_test.json \\
-    --report deepseek_interactive_report.json
+  python python/annotate_deepseek_interactive.py -o reports/deepseek/deepseek_interactive_test.json \\
+    --report reports/deepseek/deepseek_interactive_report.json
 
 断点（验证/测试进度）：加 --resume；仅重跑测试（需已有 report 里的 rubric_summary）：--test-only
 """
@@ -35,6 +35,12 @@ from collections import Counter, defaultdict
 import re
 import time
 from pathlib import Path
+
+import sys
+
+_REPO_ROOT = Path(__file__).resolve().parent.parent
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
 
 import pandas as pd
 import requests
@@ -57,10 +63,10 @@ from annotate_with_deepseek import (
     format_labeled_block,
     load_answers,
 )
-from glevel_labels import glevel_csv_to_int, parse_overall_glevel_value
+from dataset.glevel_labels import glevel_csv_to_int, parse_overall_glevel_value
 
-DEFAULT_REPORT = "deepseek_interactive_report.json"
-DEFAULT_TEST_OUT = "deepseek_interactive_test.json"
+DEFAULT_REPORT = str(_REPO_ROOT / "reports/deepseek/deepseek_interactive_report.json")
+DEFAULT_TEST_OUT = str(_REPO_ROOT / "reports/deepseek/deepseek_interactive_test.json")
 
 _NEUTRAL_CALIBRATION_RULES = """General rules (no preference for any single class):
 - Labels are official integers g_level 1, 2, or 3 (1 = lowest cognitive level in this task, 3 = highest).

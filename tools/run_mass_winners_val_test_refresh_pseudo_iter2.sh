@@ -98,7 +98,7 @@ _vote_one() {
     NANBEIGE_TEXT="${NANBEIGE_TEXT:-1}" TEXT_DIM="${TEXT_DIM:-2560}" \
       PYTHON="${_MAGNUS}" TEST_MODEL="${ckpt}" TEST_OUTPUT_CSV="${sub_csv}" \
       GLEVEL_OPT="${gopt[*]}" \
-      bash "${_ROOT}/vote_test_glevel.sh" 2>&1 | tee -a "${LOG}" | tr -d '\r' | grep '\[only_test:single\]' | tail -n 1 | sed 's/.*\[only_test:single\] //' || true
+      bash "${_ROOT}/scripts/glevel_test.sh" 2>&1 | tee -a "${LOG}" | tr -d '\r' | grep '\[only_test:single\]' | tail -n 1 | sed 's/.*\[only_test:single\] //' || true
   )"
   printf '%s\t%s\t%s\t%s\t%s\n' "${kind}" "${name}" "${ckpt}" "${val_line:-NA}" "${sub_csv}" >>"${SUMMARY}"
   echo "[mass_winners_iter2] wrote ${sub_csv}" | tee -a "${LOG}"

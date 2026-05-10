@@ -41,18 +41,18 @@ g_level 必须是官方或赛方提供的标注，不能凭空编造。
 
   --labels_in_split_csv
 
-无需 glevel_train.csv。vote_train_glevel.sh 默认 SPLIT_LABELS=1。
+无需 glevel_train.csv。scripts/glevel_train.sh 默认 SPLIT_LABELS=1。
 
-**多模态（与常见 ~51% 基线对齐，非 text_gru）**：历史上该量级多来自 **音+视+文 SharedMLPwEnsemble + 赛方 train/val 表**。若要与旧数可比，请使用赛方 **`train_data.csv` / `val_data.csv`**（勿混用 `train_fixed`），并在项目根执行 **`bash vote_train_glevel_multimodal.sh`**（内置 `cross_modal_attn`、dropout、label_smoothing、`balanced_acc` 选模、固定 seed 与长早停等；默认产出 `best_model_glevel_multimodal_plus.pth`）。训练前若 shell 里残留过 `GLEVEL_OPT='--glevel_arch text_gru ...'`，请先 **`unset GLEVEL_OPT`**。可选 `export MM_TEMPORAL=1`、`export MM_MEDIUM_BOOST=1`（温和过采样 Medium，见 `tools/glevel_plan_runbook.txt` 阶段二）、`export RUN_TEST_AFTER=1`（测试特征齐全时连跑 `vote_test_glevel.sh`），详见脚本顶部注释。**阶段性数据与问题拆解**：`tools/GLEVEL_PHASE_REPORT_zh.txt`。
+**多模态（与常见 ~51% 基线对齐，非 text_gru）**：历史上该量级多来自 **音+视+文 SharedMLPwEnsemble + 赛方 train/val 表**。若要与旧数可比，请使用赛方 **`train_data.csv` / `val_data.csv`**（勿混用 `train_fixed`），并在项目根执行 **`bash scripts/glevel_train_multimodal.sh`**（内置 `cross_modal_attn`、dropout、label_smoothing、`balanced_acc` 选模、固定 seed 与长早停等；默认产出 `best_model_glevel_multimodal_plus.pth`）。训练前若 shell 里残留过 `GLEVEL_OPT='--glevel_arch text_gru ...'`，请先 **`unset GLEVEL_OPT`**。可选 `export MM_TEMPORAL=1`、`export MM_MEDIUM_BOOST=1`（温和过采样 Medium，见 `tools/glevel_plan_runbook.txt` 阶段二）、`export RUN_TEST_AFTER=1`（测试特征齐全时连跑 `scripts/glevel_test.sh`），详见脚本顶部注释。**阶段性数据与问题拆解**：`tools/GLEVEL_PHASE_REPORT_zh.txt`。
 
 **计划书实验脚本（`tools/`，均需项目根、与 vote 相同 export）**：
 - `bash tools/run_ablation_temporal_multimodal.sh`：对照是否加 **6 题时序 GRU**（日志在 `logs/ablation_temporal/`）。
 - `bash tools/run_ablation_select_best_multimodal.sh`：`balanced_acc` / `macro_f1` / `val_ce` 选模对照。
 - `bash tools/run_multi_seed_multimodal.sh`：多 seed 训练并汇总 `logs/multi_seed_mm/metrics_seeds_*.csv`（依赖日志行 **`[metrics_line]`**）。
 - `bash tools/run_kfold_multimodal_plus.sh`：与多模态 preset 一致的 **K 折 + 提交投票**（`KFOLDS`/`KFOLD_OUT_DIR` 等同 `one_click_kfold_glevel.py`）。
-- **重要**：K 折 / 多种子与单折训练共用 **`FEAT_TRAIN` / `FEAT_VAL` / `FEAT_TEST`、`TEXT_*`**。说明文档里的 **`/path/to/...` 与 `export FEAT_TRAIN="..."` 仅为示意**；若把字面量 `"..."` 写进 shell，会变成路径 `.../audio`（不存在），日志将出现 **「特征不完整，已剔除 411/411」** 或 **450/450**。请复制你**已能跑通** `bash vote_train_glevel_multimodal.sh` 时的整组 `export`，再跑上述脚本。
+- **重要**：K 折 / 多种子与单折训练共用 **`FEAT_TRAIN` / `FEAT_VAL` / `FEAT_TEST`、`TEXT_*`**。说明文档里的 **`/path/to/...` 与 `export FEAT_TRAIN="..."` 仅为示意**；若把字面量 `"..."` 写进 shell，会变成路径 `.../audio`（不存在），日志将出现 **「特征不完整，已剔除 411/411」** 或 **450/450**。请复制你**已能跑通** `bash scripts/glevel_train_multimodal.sh` 时的整组 `export`，再跑上述脚本。
 - `bash tools/preflight_test_submission.sh`：仅测 **测试集** audio/video + 文本 `.npy` 覆盖，便于打通 `predict_test`。
-- `bash tools/run_glevel_coral_multimodal.sh`：**CORAL 序关系损失**（`train_task2_glevel.py --glevel_loss coral`，三分类专用）。**`vote_test_glevel.sh` 加载 CORAL 权重时须在 `GLEVEL_OPT` 中含 `--glevel_loss coral`**，否则最后一层维数不匹配。
+- `bash tools/run_glevel_coral_multimodal.sh`：**CORAL 序关系损失**（`train_task2_glevel.py --glevel_loss coral`，三分类专用）。**`scripts/glevel_test.sh` 加载 CORAL 权重时须在 `GLEVEL_OPT` 中含 `--glevel_loss coral`**，否则最后一层维数不匹配。
 - `bash tools/run_multimodal_medium_focus.sh`：**Medium / macro-F1** 预设（manual 类权 `1,2,1` + 关平衡采样 + `select_best=macro_f1`）；**勿再叠 `--class_weight auto`**。
 
 **序数 / 跨档错分（实验顺序）**：优先对比 **`--glevel_loss ce` vs `coral`**（CORAL 已为 K−1 辅助二分类，与「单标量+阈值」ordinal 不同）；单标量 ordinal 头暂缓，待 CORAL 调参后再评估是否值得增加维护成本。
@@ -66,7 +66,7 @@ g_level 必须是官方或赛方提供的标注，不能凭空编造。
 - **`--tta_times` / `--tta_noise_std`**：`only_test` 与训练结束 **`predict_test`** 时对特征加噪多次平均概率（0 关闭）。
 - **`--optim sam --sam_rho 0.05`**：SAM（底层 AdamW，每步约两倍计算）。
 
-Shell：`export MM_BIDIRECTIONAL=1` 且 **`MM_TEMPORAL=1`** 时，`vote_train_glevel_multimodal.sh` 会追加 `--temporal_bidirectional --temporal_attn_pool`。
+Shell：`export MM_BIDIRECTIONAL=1` 且 **`MM_TEMPORAL=1`** 时，`scripts/glevel_train_multimodal.sh` 会追加 `--temporal_bidirectional --temporal_attn_pool`。
 
 四、仅跑通代码（假标签，无意义）
 ------------------------
@@ -85,14 +85,14 @@ Shell：`export MM_BIDIRECTIONAL=1` 且 **`MM_TEMPORAL=1`** 时，`vote_train_gl
 - 合并 train+val 做分层 K 折并多数投票融合提交（推荐，无 CRLF 问题）：
     cd /path/to/AVI2026_Track2_GLevel
     python one_click_kfold_glevel.py
-  或：bash vote_kfold_glevel.sh（项目根，内部 `python one_click_kfold_glevel.py`）
+  或：bash scripts/glevel_kfold.sh（项目根，内部 `python one_click_kfold_glevel.py`）
   或手动：python tools/run_kfold_glevel.py --merge ... --  --text_dim 768
   再：python tools/ensemble_glevel_csv.py --inputs kfold_glevel_out/fold0_submission.csv ... --out submission_glevel_kfold_vote.csv
 - 合并折训练时，部分 id 仅在 val_feature 下有 .npy，训练脚本会自动加 --train_feat_fallback（由 run_kfold_glevel 在 --merge 时传入）。
 - 重提文本向量（推荐）：export TEXT_ROOT=... OUT_ROOT=... 后执行
     python tools/extract_nanbeige_one_click.py
   或 bash tools/extract_nanbeige_text.example.sh
-  以 stderr 打印的维数设置 TEXT_DIM 与 TEXT_TRAIN_DIR 等（见 vote_train_glevel.sh）。**`vote_test_glevel.sh` 已与训练脚本对齐**：同样识别 `NANBEIGE_TEXT` / `NANBEIGE_TEXT_SUBDIR`，推理前请 export 与训练一致。
+  以 stderr 打印的维数设置 TEXT_DIM 与 TEXT_TRAIN_DIR 等（见 scripts/glevel_train.sh）。**`scripts/glevel_test.sh` 已与训练脚本对齐**：同样识别 `NANBEIGE_TEXT` / `NANBEIGE_TEXT_SUBDIR`，推理前请 export 与训练一致。
 
 七、文本提取卡住 / 试跑 / 后台（可选）
 ------------------------
@@ -100,14 +100,14 @@ Shell：`export MM_BIDIRECTIONAL=1` 且 **`MM_TEMPORAL=1`** 时，`vote_train_gl
 - 先试跑少量文件（不下载完也可先验证流程）：  export MAX_FILES=30
 - 换更小权重（下载更小）：  export MODEL_ID=Nanbeige/Nanbeige4-3B-Base
 - 后台写日志：  nohup python tools/extract_nanbeige_one_click.py > extract_nb.log 2>&1 &
-- extract_text 支持 --max_files；训练侧可选 --class_weight auto 与 --label_smoothing 0.05（见 train_task2_glevel.py --help）。**MixUp 默认关闭**（`--mixup_prob 0`）。`train_task2_glevel.py` 默认早停耐心 **40**，并支持 **`--early_stop_min_epochs`**（先训满若干 epoch 才允许早停）。**`vote_train_glevel.sh` 在命令行末尾**传入默认 `--early_stop_patience 40`、`--early_stop_min_epochs 12`、`--lr_scheduler_patience 5`（可用环境变量 **`EARLY_STOP_PATIENCE` / `EARLY_STOP_MIN_EPOCHS` / `LR_SCHEDULER_PATIENCE`** 覆盖，且会覆盖 `GLEVEL_OPT` 里同名参数）。仍过早停时可继续加大耐心或换 `--select_best`。
+- extract_text 支持 --max_files；训练侧可选 --class_weight auto 与 --label_smoothing 0.05（见 train_task2_glevel.py --help）。**MixUp 默认关闭**（`--mixup_prob 0`）。`train_task2_glevel.py` 默认早停耐心 **40**，并支持 **`--early_stop_min_epochs`**（先训满若干 epoch 才允许早停）。**`scripts/glevel_train.sh` 在命令行末尾**传入默认 `--early_stop_patience 40`、`--early_stop_min_epochs 12`、`--lr_scheduler_patience 5`（可用环境变量 **`EARLY_STOP_PATIENCE` / `EARLY_STOP_MIN_EPOCHS` / `LR_SCHEDULER_PATIENCE`** 覆盖，且会覆盖 `GLEVEL_OPT` 里同名参数）。仍过早停时可继续加大耐心或换 `--select_best`。
 - 时序：可加 --temporal_gru（6 题 fused 序列经 GRU 再分类），默认关闭。
 - 鲁棒：--modality_dropout_p 0.1~0.2 训练时随机丢一整模态（eval 不丢）。
 - 融合：--cross_modal_attn 在拼接前对 video/text/audio 做一层（或多层 --cross_modal_layers）Transformer 自注意力；可与 --temporal_gru 同开。
-- **`import torch` 报 `undefined symbol: nccl...`**：属 **PyTorch CUDA 构建与系统 NCCL/CUDA 运行时栈不一致**（与仓库训练逻辑无关）。请在 **新 conda 环境** 按 https://pytorch.org 选择与节点 CUDA 匹配的命令重装 `torch`/`torchvision`/`torchaudio`，或暂用 **CPU 版** wheel；勿强依赖已损坏的 base。训练/测试脚本支持指定解释器：**`export PYTHON=/path/to/conda/envs/你的环境/bin/python`** 后再执行 `bash vote_train_glevel.sh` / `bash vote_test_glevel.sh` / `bash vote_kfold_glevel.sh`。`train_task2_glevel.py` 在导入失败时会打印简要排查提示。
+- **`import torch` 报 `undefined symbol: nccl...`**：属 **PyTorch CUDA 构建与系统 NCCL/CUDA 运行时栈不一致**（与仓库训练逻辑无关）。请在 **新 conda 环境** 按 https://pytorch.org 选择与节点 CUDA 匹配的命令重装 `torch`/`torchvision`/`torchaudio`，或暂用 **CPU 版** wheel；勿强依赖已损坏的 base。训练/测试脚本支持指定解释器：**`export PYTHON=/path/to/conda/envs/你的环境/bin/python`** 后再执行 `bash scripts/glevel_train.sh` / `bash scripts/glevel_test.sh` / `bash scripts/glevel_kfold.sh`。`train_task2_glevel.py` 在导入失败时会打印简要排查提示。
 - 失败时项目根会生成/追加 **`debug-f0e227.log`**（`vote_*` 预检或手动 `python tools/diagnose_torch_env.py`）。跳过 shell 预检：`export SKIP_TORCH_PREFLIGHT=1`（仍会在 `train_task2_glevel.py` 首行 `import torch` 处失败并写日志）。
 - 预检失败时终端会打印 **`tools/print_torch_env_fix_hint.sh`** 中的**可复制** conda/pip 示例；也可单独执行：`bash tools/print_torch_env_fix_hint.sh`。
-- **根本规避 NCCL/base 混装**：**`python3 tools/bootstrap_isolated_cpu_env.py`**（推荐，不受 bash CRLF 影响）在项目根创建 `.venv_glevel_cpu` 并装 CPU 版 torch；再 `source .venv_glevel_cpu/bin/activate`、`export PYTHON=.../bin/python` 后跑 `vote_train_glevel.sh`。备选：`bash tools/bootstrap_isolated_cpu_env.sh`。若 shell 脚本在 Linux 报 `set: pipefail`，对仓库执行 `git add --renormalize .` 或 `sed -i 's/\\r$//' tools/*.sh *.sh`。训练走 CPU、较慢，但与损坏的 `(base)` 隔离。
+- **根本规避 NCCL/base 混装**：**`python3 tools/bootstrap_isolated_cpu_env.py`**（推荐，不受 bash CRLF 影响）在项目根创建 `.venv_glevel_cpu` 并装 CPU 版 torch；再 `source .venv_glevel_cpu/bin/activate`、`export PYTHON=.../bin/python` 后跑 `scripts/glevel_train.sh`。备选：`bash tools/bootstrap_isolated_cpu_env.sh`。若 shell 脚本在 Linux 报 `set: pipefail`，对仓库执行 `git add --renormalize .` 或 `sed -i 's/\\r$//' tools/*.sh *.sh`。训练走 CPU、较慢，但与损坏的 `(base)` 隔离。
 
 八、类别不平衡（避免「全猜 High」或「全猜 Medium」塌缩）
 ------------------------
@@ -127,7 +127,7 @@ Nanbeige 文本（2560）：全量提取到 `train_feature/text_nb` 后 **`expor
 
   --val_errors_csv ./logs/val_glevel_errors.csv
 
-或：  export VAL_ERRORS_CSV=./logs/val_glevel_errors.csv  后 bash vote_train_glevel.sh
+或：  export VAL_ERRORS_CSV=./logs/val_glevel_errors.csv  后 bash scripts/glevel_train.sh
 
 写出 CSV：id、真值/预测、各类 prob、CE、是否正确；并合并 val 划分表中的列（便于对照被试元数据）。
 终端打印：混淆矩阵、各类 recall、错分「真→预测」计数（如 Medium→High）。
@@ -138,7 +138,7 @@ CSV 中的 **`prob_class0/1/2`** 与 **`margin_top2`**（Top2 概率差）：若
 对已训模型单独分析（路径须与训练一致，含 GLEVEL_OPT）：
 
   export VAL_ERRORS_CSV=./logs/val_glevel_errors.csv
-  bash vote_test_glevel.sh
+  bash scripts/glevel_test.sh
 
 或一键（同上，默认写出 `./logs/val_glevel_errors.csv`）：
 
@@ -147,7 +147,7 @@ CSV 中的 **`prob_class0/1/2`** 与 **`margin_top2`**（Top2 概率差）：若
 或手写：
 
   python train_task2_glevel.py --only_test --test_model best_model_glevel.pth \\
-    ... 同 vote_train_glevel 的特征与 csv 参数 ... \\
+    ... 同 scripts/glevel_train.sh 的特征与 csv 参数 ... \\
     --val_errors_csv ./logs/val_errors.csv
 
 十、服务器路径扫描与结果拉回本机（可选）
@@ -181,14 +181,14 @@ CSV 中的 **`prob_class0/1/2`** 与 **`margin_top2`**（Top2 概率差）：若
 ------------------------
 **0）路线 A 一键预检（推荐训练或 K 折前执行）**
 
-与 `vote_train_glevel.sh` 相同地 `export TRAIN_CSV`、`VAL_CSV`、`TEST_CSV`、`FEAT_*`、`NANBEIGE_TEXT`、`TEXT_*_DIR` 等后：
+与 `scripts/glevel_train.sh` 相同地 `export TRAIN_CSV`、`VAL_CSV`、`TEST_CSV`、`FEAT_*`、`NANBEIGE_TEXT`、`TEXT_*_DIR` 等后：
 
   bash tools/route_a_complete.sh
 
 或训练时自动跑预检：
 
   export ROUTE_A_PREFLIGHT=1
-  bash vote_train_glevel.sh
+  bash scripts/glevel_train.sh
 
 步骤包括：`FEAT_TEST` 的 audio/video（`NANBEIGE_TEXT=1` 时不强制 `FEAT_TEST/text`）、val 三模态缺失报告、val/test 的 **文本** `.npy` 全覆盖检查。未通过时按终端提示补特征或见 `tools/extract_nanbeige_splits.example.sh`。
 
@@ -208,27 +208,27 @@ CSV 中的 **`prob_class0/1/2`** 与 **`margin_top2`**（Top2 概率差）：若
 
 - 对 **train / val / test** 转写分别或统一提取到各 `TEXT_*_DIR`，避免 smoke 目录只有 train id 导致 val 全剔除。
 - **勿**把 `TEXT_VAL_DIR` / `TEXT_TEST_DIR` 指到「仅含 train id」的目录（例如只移了训练集 `text_nb`）：验证集/测试集 id 与训练不同，主目录里若没有 `{该id}_{q}.npy`，会整表被剔除并报 `val_data.csv 过滤后无剩余样本`。应对：对 val（及 test）转写再跑 `extract_nanbeige_one_click.py`，`OUT_ROOT` 指到含 **对应划分 id** 的目录（可与 train 合并到同一 `text_nb` 目录以增加文件，或分 `text_nb_val` / `text_nb_test` 再分别 `export`）。
-- `export NANBEIGE_TEXT=1`，`TEXT_DIM=2560`，`vote_train_glevel.sh` / `vote_test_glevel.sh` 与 K 折脚本中路径一致。
+- `export NANBEIGE_TEXT=1`，`TEXT_DIM=2560`，`scripts/glevel_train.sh` / `scripts/glevel_test.sh` 与 K 折脚本中路径一致。
 
 **3）GPU 与解释器**
 
-有 GPU 时使用与 CUDA 匹配的干净环境（见上文 `import torch` / NCCL 说明）；`export PYTHON=/path/to/env/bin/python` 后跑 `vote_train_glevel.sh` / `vote_kfold_glevel.sh`。
+有 GPU 时使用与 CUDA 匹配的干净环境（见上文 `import torch` / NCCL 说明）；`export PYTHON=/path/to/env/bin/python` 后跑 `scripts/glevel_train.sh` / `scripts/glevel_kfold.sh`。
 
 **4）超参与结构消融（`GLEVEL_OPT`）**
 
 - 选模：`--select_best macro_f1`（默认）、`balanced_acc`、`val_ce` 对比。
 - 结构：依次试 `--temporal_gru --temporal_pool mean`、`--cross_modal_attn`、`--modality_dropout_p 0.12`（可与关 MixUp、长早停组合）。
-- 详见 `vote_train_glevel.sh` 顶部注释示例。
+- 详见 `scripts/glevel_train.sh` 顶部注释示例。
 
 **5）K 折 + 提交融合**
 
-  bash vote_kfold_glevel.sh
+  bash scripts/glevel_kfold.sh
 
 或（跑 K 折**前**先检查文本；可加全量路线 A：`export ROUTE_A_PREFLIGHT=1`）：
 
   bash tools/run_kfold_glevel_submit.sh
 
-`one_click_kfold_glevel.py` 已与 `vote_train_glevel.sh` 对齐：设 **`export NANBEIGE_TEXT=1`** 时默认使用 `FEAT_*/text_nb`（或 `NANBEIGE_TEXT_SUBDIR`、`*smoke*` 规则），并尊重已 `export` 的 `TEXT_TRAIN_DIR` / `TEXT_VAL_DIR` / `TEXT_TEST_DIR`。
+`one_click_kfold_glevel.py` 已与 `scripts/glevel_train.sh` 对齐：设 **`export NANBEIGE_TEXT=1`** 时默认使用 `FEAT_*/text_nb`（或 `NANBEIGE_TEXT_SUBDIR`、`*smoke*` 规则），并尊重已 `export` 的 `TEXT_TRAIN_DIR` / `TEXT_VAL_DIR` / `TEXT_TEST_DIR`。
 
 输出目录默认 `KFOLD_OUT_DIR=./kfold_glevel_out`，融合文件 `submission_glevel_kfold_vote.csv`。亦可手动：
 

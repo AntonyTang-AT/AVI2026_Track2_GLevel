@@ -3,9 +3,9 @@
 g_level 分层 K 折训练 + 提交多数投票融合（纯 Python，避免 .sh 在 CRLF 下续行失效）。
 
 用法（在项目根目录）:
-  python one_click_kfold_glevel.py
+  python python/one_click_kfold_glevel.py
 
-环境变量与 vote_train_glevel / vote_kfold 一致，例如:
+环境变量与 scripts/glevel_train.sh / scripts/glevel_kfold.sh 一致，例如:
   export KFOLDS=5 KFOLD_SEED=42 KFOLD_OUT_DIR=./kfold_glevel_out
   export GLEVEL_OPT="--temporal_gru --label_smoothing 0.05"  # 显式覆盖下方默认多模态预设
   export KFOLD_MINIMAL_DEFAULT=1  # 仅 --g_level_int_encoding one（轻量，与 multimodal 不对齐）
@@ -23,7 +23,7 @@ from pathlib import Path
 
 
 def main() -> None:
-    root = Path(os.environ.get("PROJECT_ROOT", Path(__file__).resolve().parent)).resolve()
+    root = Path(os.environ.get("PROJECT_ROOT", Path(__file__).resolve().parent.parent)).resolve()
     os.chdir(root)
 
     train_csv = os.environ.get("TRAIN_CSV", "/data/Super-Lu/dataset/train_data.csv")
@@ -73,7 +73,7 @@ def main() -> None:
             )
             print(
                 "[one_click_kfold_glevel] GLEVEL_OPT 未设置 → 使用与 "
-                "vote_train_glevel_multimodal（MM_MEDIUM_BOOST=1）一致的训练超参",
+                "scripts/glevel_train_multimodal.sh（MM_MEDIUM_BOOST=1）一致的训练超参",
                 flush=True,
             )
     kfold_extra = shlex.split(os.environ.get("KFOLD_EXTRA", ""))

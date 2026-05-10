@@ -8,7 +8,7 @@
 #   2) 设置 OUT_ROOT 为要写 .npy 的目录
 #   3) python tools/extract_nanbeige_one_click.py
 #
-# 训练时示例（与 vote_train_glevel.sh 一致）:
+# 训练时示例（与 scripts/glevel_train.sh 一致）:
 #   TEXT_TRAIN_DIR=$PWD/data/text_nb_train   或合并目录 $PWD/data/text_nb
 #   TEXT_VAL_DIR=$PWD/data/text_nb_val
 #   TEXT_TEST_DIR=$PWD/data/text_nb_test

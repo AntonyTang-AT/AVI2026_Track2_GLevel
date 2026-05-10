@@ -16,7 +16,7 @@ export TEXT_VAL_DIR="${TEXT_VAL_DIR:-${_ROOT}/data/text_nb_val}"
 export TEXT_TEST_DIR="${TEXT_TEST_DIR:-${_ROOT}/data/test_nb}"
 export TEST_CSV="${TEST_CSV:-/data/Super-Lu/dataset/test_data_basic_information.csv}"
 export TEST_MODEL="${TEST_MODEL:-${_ROOT}/experiments/nb_to58_sweep/round1/seed37/best.pth}"
-export TEST_OUTPUT_CSV="${TEST_OUTPUT_CSV:-${_ROOT}/submission_glevel_test_official.csv}"
+export TEST_OUTPUT_CSV="${TEST_OUTPUT_CSV:-${_ROOT}/reports/submissions/submission_glevel_test_official.csv}"
 
 WINNER_OPT="--g_level_int_encoding one --glevel_arch shared_mlp --mlp_dropout 0.25 --weight_decay 0.001 --label_smoothing 0.05 --select_best balanced_acc --cross_modal_attn --cross_modal_layers 1 --modality_dropout_p 0.12 --scheduler_min_lr 1e-6 --sampler_medium_boost 1.5 --seed 37"
 export GLEVEL_OPT="${GLEVEL_OPT:-$WINNER_OPT}"
@@ -27,4 +27,4 @@ if [ -n "${INFER_LOGIT_BIAS:-}" ]; then
 fi
 
 echo "[run_official_test_submit_nanbeige] TEST_OUTPUT_CSV=$TEST_OUTPUT_CSV" >&2
-bash "${_ROOT}/vote_test_glevel.sh"
+bash "${_ROOT}/scripts/glevel_test.sh"

@@ -45,7 +45,7 @@ run_cell() {
     export TEST_OUTPUT_CSV="${subdir}/submission.csv"
     local log="$subdir/train.log"
     echo "[mini_grid] ${cell} seed=${s}" >&2
-    bash "${_ROOT}/vote_train_glevel.sh" 2>&1 | tee "$log"
+    bash "${_ROOT}/scripts/glevel_train.sh" 2>&1 | tee "$log"
     local ml
     ml="$(grep '^\[metrics_line\]' "$log" | tail -n 1 || true)"
     if [[ -z "$ml" ]]; then

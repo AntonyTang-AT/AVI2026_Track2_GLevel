@@ -49,7 +49,7 @@ def _split_argv() -> tuple[list[str], list[str]]:
 def main() -> None:
     argv, train_extra = _split_argv()
     root = Path(__file__).resolve().parent.parent
-    train_py = root / "train_task2_glevel.py"
+    train_py = root / "python" / "train_task2_glevel.py"
 
     p = argparse.ArgumentParser(
         description="g_level StratifiedKFold，多次调用 train_task2_glevel.py",

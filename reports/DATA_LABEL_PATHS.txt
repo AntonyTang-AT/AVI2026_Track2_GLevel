@@ -6,15 +6,15 @@ AI 标注（DeepSeek）主要路径（仓库根 = AVI2026_Track2_GLevel）
 ``python3 tools/migrate_legacy_glevel_artifacts_to_123.py``（可加 ``--dry-run``）批量转换。
 
 [zyn 完整转写 + 3× 管线多数票，已完成示例]
-- deepseek_ens_r3_vote_zyn.json
-- deepseek_ens_r3_vote_zyn_run0.json … run2.json
-- deepseek_ens_r3_report_zyn_run*.json
-- deepseek_ens_r3_run_zyn.log
+- reports/deepseek/deepseek_ens_r3_vote_zyn.json
+- reports/deepseek/deepseek_ens_r3_vote_zyn_run0.json … run2.json
+- reports/deepseek/deepseek_ens_r3_report_zyn_run*.json
+- reports/deepseek/deepseek_ens_r3_run_zyn.log（若存在）
 
 [中性校准 + 更丰富训练默认 + 3× 管线，输出文件名]
-- deepseek_ens_neutral_r3_vote_zyn.json（多数票）
-- deepseek_ens_neutral_r3_report_zyn_run*.json / deepseek_ens_neutral_r3_vote_zyn_run*.json
-- deepseek_ens_neutral_r3_run_zyn.log
+- reports/deepseek/deepseek_ens_neutral_r3_vote_zyn.json（多数票）
+- reports/deepseek/deepseek_ens_neutral_r3_report_zyn_run*.json / reports/deepseek/deepseek_ens_neutral_r3_vote_zyn_run*.json
+- reports/deepseek/deepseek_ens_neutral_r3_run_zyn.log（若存在）
 
 [加权伪标签]
 - external/submissions_peer/test_pseudo_weighted_peers4_plateau_ln28.csv

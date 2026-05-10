@@ -9,7 +9,7 @@
 #   python3 tools/bootstrap_isolated_cpu_env.py
 #   source .venv_glevel_cpu/bin/activate
 #   export PYTHON="$PWD/.venv_glevel_cpu/bin/python"
-#   bash vote_train_glevel.sh
+#   bash scripts/glevel_train.sh
 # 优先用上一行 Python 引导，避免 bash 脚本经 Windows 同步后出现 CRLF 导致 Linux 报错。
 # 备选：bash tools/bootstrap_isolated_cpu_env.sh
 # 其余依赖见 requirements-core.txt（由脚本自动 pip install）。

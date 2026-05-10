@@ -20,20 +20,23 @@ echo "[overnight] start $(date -Is)"
 echo "=== [1] build weighted pseudo ==="
 python3 "${ROOT}/tools/build_weighted_pseudo_peers_plateau.py"
 
+_DEEP_DIR="${ROOT}/reports/deepseek"
+mkdir -p "${_DEEP_DIR}"
+
 echo "=== [2] DeepSeek neutral 3-pass (background if not running and no output) ==="
-if [[ -f "${ROOT}/deepseek_ens_neutral_r3_vote_zyn.json" ]]; then
-  echo "skip: deepseek_ens_neutral_r3_vote_zyn.json exists"
+if [[ -f "${_DEEP_DIR}/deepseek_ens_neutral_r3_vote_zyn.json" ]]; then
+  echo "skip: ${_DEEP_DIR}/deepseek_ens_neutral_r3_vote_zyn.json exists"
 elif pgrep -f "deepseek_ens_neutral_r3_vote_zyn.json" >/dev/null 2>&1; then
   echo "skip: annotate_deepseek_interactive already running for neutral output"
 else
-  nohup python3 "${ROOT}/annotate_deepseek_interactive.py" \
+  nohup python3 "${ROOT}/python/annotate_deepseek_interactive.py" \
     --pipeline-runs 3 --pipeline-seed-stride 1009 \
     --test-text-dir /data/zyn/test_text \
     --test-temperature 0.12 --test-temperature-stride 0.03 \
-    --report deepseek_ens_neutral_r3_report_zyn.json \
-    -o deepseek_ens_neutral_r3_vote_zyn.json \
+    --report "${_DEEP_DIR}/deepseek_ens_neutral_r3_report_zyn.json" \
+    -o "${_DEEP_DIR}/deepseek_ens_neutral_r3_vote_zyn.json" \
     --sleep 0.2 \
-    >>"${ROOT}/deepseek_ens_neutral_r3_run_zyn.log" 2>&1 &
+    >>"${ROOT}/reports/deepseek/deepseek_ens_neutral_r3_run_zyn.log" 2>&1 &
   echo "started deepseek pid=$!"
 fi
 
@@ -46,9 +49,9 @@ export NUM_EPOCHS="${NUM_EPOCHS:-120}"
 bash "${ROOT}/tools/run_glevel_gpu_combo_sweep.sh"
 
 echo "=== [4] triple metric rank ==="
-DEEP="${ROOT}/deepseek_ens_r3_vote_zyn.json"
-if [[ -f "${ROOT}/deepseek_ens_neutral_r3_vote_zyn.json" ]]; then
-  DEEP="${ROOT}/deepseek_ens_neutral_r3_vote_zyn.json"
+DEEP="${_DEEP_DIR}/deepseek_ens_r3_vote_zyn.json"
+if [[ -f "${_DEEP_DIR}/deepseek_ens_neutral_r3_vote_zyn.json" ]]; then
+  DEEP="${_DEEP_DIR}/deepseek_ens_neutral_r3_vote_zyn.json"
 fi
 python3 "${ROOT}/tools/rank_gpu_sweep_triple_metric.py" \
   --sweep-csv "${HUNT_DIR}/combo_sweep_metrics.csv" \

@@ -46,7 +46,7 @@ for s in ${SEEDS}; do
   ODIR="${OUT_ROOT}/seed${s}"
   mkdir -p "${ODIR}"
   echo "[at_baseline] train seed=${s} -> ${ODIR}/best.pth" >&2
-  "${PY}" "${_ROOT}/train_task2_glevel.py" \
+  "${PY}" "${_ROOT}/python/train_task2_glevel.py" \
     --train_csv "${SUP}/train_data.csv" \
     --val_csv "${SUP}/val_data.csv" \
     --test_csv "${TEST_CSV}" \

@@ -28,4 +28,4 @@ export EARLY_STOP_MIN_EPOCHS="${EARLY_STOP_MIN_EPOCHS:-5}"
 
 export GLEVEL_OPT="${GLEVEL_OPT:---g_level_int_encoding one --glevel_arch shared_mlp --mlp_dropout 0.25 --weight_decay 0.001 --label_smoothing 0.05 --select_best balanced_acc --cross_modal_attn --cross_modal_layers 1 --modality_dropout_p 0.12 --scheduler_min_lr 1e-6 --sampler_medium_boost 1.5 --seed 37 --train_feat_fallback --train_fallback_use_test_features}"
 
-bash "${_ROOT}/vote_train_glevel.sh"
+bash "${_ROOT}/scripts/glevel_train.sh"

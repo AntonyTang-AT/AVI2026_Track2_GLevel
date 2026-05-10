@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # 阶段一：prepare_svm_data + train_svm
-# 数据路径与 vote_train_glevel.sh 完全一致：source tools/glevel_paths.inc.sh
+# 数据路径与 scripts/glevel_train.sh 完全一致：source tools/glevel_paths.inc.sh
 #
 # 一键（赛方 1–3 + Nanbeige；测试集文本默认优先用工程内 data/test_nb，若该目录存在）：
 #   cd ~/antonytang/AVI2026_Track2_GLevel && NANBEIGE_TEXT=1 G_LEVEL_INT_ENCODING=one bash tools/run_phase1_svm.sh

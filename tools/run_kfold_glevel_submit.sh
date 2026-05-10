@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# K 折训练 + 多数投票 submission（与 vote_kfold_glevel.sh 相同），可选跑前检查测试集文本 .npy。
+# K 折训练 + 多数投票 submission（与 scripts/glevel_kfold.sh 相同），可选跑前检查测试集文本 .npy。
 # 需与单折训练一致地 export FEAT_*、CSV、NANBEIGE_TEXT、TEXT_*、GLEVEL_OPT 等。
 set -eu
 _SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -24,4 +24,4 @@ else
   echo "[run_kfold_glevel_submit] 跳过文本预检（设 PREFLIGHT_KFOLD_TEXT=0 或缺 TEST_CSV/TEXT_TEST_DIR）" >&2
 fi
 
-exec bash "${_ROOT}/vote_kfold_glevel.sh"
+exec bash "${_ROOT}/scripts/glevel_kfold.sh"

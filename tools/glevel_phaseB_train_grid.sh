@@ -36,7 +36,7 @@ _run() {
   echo "[phaseB] ${name} GLEVEL_OPT=${GLEVEL_OPT}" >&2
   if [[ "${RUN}" == "1" ]]; then
     mkdir -p "$(dirname "${OUTPUT_MODEL}")"
-    bash "${_ROOT}/vote_train_glevel.sh"
+    bash "${_ROOT}/scripts/glevel_train.sh"
   fi
 }
 
@@ -62,5 +62,5 @@ for j in "${ARR[@]}"; do
 done
 
 if [[ "${RUN}" != "1" && "${DRY_RUN}" == "1" ]]; then
-  echo "[phaseB] DRY RUN only. Set PHASE_B_RUN=1 to execute vote_train_glevel.sh jobs." >&2
+  echo "[phaseB] DRY RUN only. Set PHASE_B_RUN=1 to execute scripts/glevel_train.sh jobs." >&2
 fi

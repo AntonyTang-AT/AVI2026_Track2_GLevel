@@ -29,7 +29,7 @@ CKPT99="${CKPT99:-/data/emo/glevel_runs/archives/nb_to58_sweep/round1/seed99/bes
 
 {
   echo "=== $(date -Iseconds) CE ensemble seed37+10+99 ==="
-  "${PYTHON}" train_task2_glevel.py \
+  "${PYTHON}" "${_ROOT}/python/train_task2_glevel.py" \
     --only_test \
     --ensemble_checkpoints "${CKPT37}" "${CKPT10}" "${CKPT99}" \
     --test_model "${CKPT37}" \
@@ -60,7 +60,7 @@ CKPT99="${CKPT99:-/data/emo/glevel_runs/archives/nb_to58_sweep/round1/seed99/bes
 
 {
   echo "=== $(date -Iseconds) TTA tta_times=8 seed37 single ==="
-  "${PYTHON}" train_task2_glevel.py \
+  "${PYTHON}" "${_ROOT}/python/train_task2_glevel.py" \
     --only_test \
     --test_model "${CKPT37}" \
     --train_csv "/data/Super-Lu/dataset/train_data.csv" \

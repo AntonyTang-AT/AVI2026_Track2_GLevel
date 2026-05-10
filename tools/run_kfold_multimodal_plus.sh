@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 分层 K 折（合并 train+val）+ 提交投票融合，超参与 vote_train_glevel_multimodal 默认一致。
+# 分层 K 折（合并 train+val）+ 提交投票融合，超参与 scripts/glevel_train_multimodal.sh 默认一致。
 # 环境变量：KFOLDS KFOLD_SEED KFOLD_OUT_DIR（同 one_click_kfold_glevel.py）
 set -eu
 _SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -10,7 +10,7 @@ cd "${PROJECT_ROOT:-$_ROOT}"
 _feat="${FEAT_TRAIN:-/data/Super-Lu/dataset/train_feature}"
 _val="${FEAT_VAL:-/data/Super-Lu/dataset/val_feature}"
 if [ "$_feat" = "..." ] || [ "$_val" = "..." ]; then
-  echo "[run_kfold_multimodal_plus] 错误: FEAT_TRAIN/FEAT_VAL 不能为占位符 \"...\"。请设为与 vote_train_glevel 能跑通时相同的真实路径。" >&2
+  echo "[run_kfold_multimodal_plus] 错误: FEAT_TRAIN/FEAT_VAL 不能为占位符 \"...\"。请设为与 scripts/glevel_train.sh 能跑通时相同的真实路径。" >&2
   exit 2
 fi
 for _d in "$_feat/audio" "$_feat/video" "$_val/audio" "$_val/video"; do
@@ -35,6 +35,6 @@ export KFOLD_SEED="${KFOLD_SEED:-42}"
 echo "[run_kfold_multimodal_plus] GLEVEL_OPT=$GLEVEL_OPT" >&2
 echo "[run_kfold_multimodal_plus] KFOLDS=$KFOLDS out=$KFOLD_OUT_DIR" >&2
 
-"${PYTHON:-python3}" "${_ROOT}/one_click_kfold_glevel.py"
+"${PYTHON:-python3}" "/python/one_click_kfold_glevel.py"
 
 echo "[run_kfold_multimodal_plus] 融合提交: ${KFOLD_OUT_DIR}/submission_glevel_kfold_vote.csv" >&2

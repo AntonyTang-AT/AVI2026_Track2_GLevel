@@ -32,7 +32,7 @@ BASE_OPT="--g_level_int_encoding one --glevel_arch shared_mlp --mlp_dropout 0.25
 
 for b in ${BIAS_LIST}; do
   export GLEVEL_OPT="${BASE_OPT} --infer_logit_bias 0,${b},0"
-  line="$(bash "${_ROOT}/vote_test_glevel.sh" 2>&1 | grep '\[only_test:single\]' || true)"
+  line="$(bash "${_ROOT}/scripts/glevel_test.sh" 2>&1 | grep '\[only_test:single\]' || true)"
   # shellcheck disable=SC2001
   metrics="$(echo "${line}" | sed -n 's/.*Val CE=\([0-9.]*\) acc=\([0-9.]*\) macro_f1=\([0-9.]*\) bal_acc=\([0-9.]*\) val_pred_classes=\([0-9]*\).*/\1,\2,\3,\4,\5/p')"
   if [[ -z "${metrics}" ]]; then

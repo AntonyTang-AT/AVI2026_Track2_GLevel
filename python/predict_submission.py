@@ -22,9 +22,11 @@ import pandas as pd
 import torch
 import torch.nn.functional as F
 
-_ROOT = os.path.abspath(os.path.dirname(__file__))
-if _ROOT not in sys.path:
-    sys.path.insert(0, _ROOT)
+_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+_PY_DIR = os.path.dirname(os.path.abspath(__file__))
+for _p in (_ROOT, _PY_DIR):
+    if _p not in sys.path:
+        sys.path.insert(0, _p)
 
 from dataset.baseline_dataset2_vote import (  # noqa: E402
     _list_npy_filenames,

@@ -63,7 +63,7 @@ _run_job() {
     NANBEIGE_TEXT="${NANBEIGE_TEXT:-1}" TEXT_DIM="${TEXT_DIM:-2560}" \
     PYTHON="${_MAGNUS}" TEST_MODEL="${ckpt}" TEST_OUTPUT_CSV="${sub_csv}" \
     GLEVEL_OPT="${gopt[*]}" \
-    bash "${_ROOT}/vote_test_glevel.sh" 2>&1 | tee -a "${LOG}" | tr -d '\r' | grep '\[only_test:single\]' | tail -n 1 | sed 's/.*\[only_test:single\] //' || true
+    bash "${_ROOT}/scripts/glevel_test.sh" 2>&1 | tee -a "${LOG}" | tr -d '\r' | grep '\[only_test:single\]' | tail -n 1 | sed 's/.*\[only_test:single\] //' || true
   )"
 
   if [[ ! -f "${sub_csv}" ]]; then

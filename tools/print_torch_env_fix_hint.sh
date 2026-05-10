@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 由 vote_train_glevel.sh / vote_test_glevel.sh 在 PyTorch 预检失败时调用；仅向 stderr 打印可复制命令。
+# 由 scripts/glevel_train.sh / scripts/glevel_test.sh 在 PyTorch 预检失败时调用；仅向 stderr 打印可复制命令。
 cat <<'HINT' >&2
 
 ========== PyTorch 导入失败（多为 NCCL/CUDA 栈与 torch 不匹配）==========
@@ -10,7 +10,7 @@ cat <<'HINT' >&2
   pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
   pip install -r requirements.txt
   export PYTHON="$CONDA_PREFIX/bin/python"
-  cd /path/to/AVI2026_Track2_GLevel && bash vote_train_glevel.sh
+  cd /path/to/AVI2026_Track2_GLevel && bash scripts/glevel_train.sh
 
 根本规避 NCCL（CPU 训练）推荐:
   python3 tools/bootstrap_isolated_cpu_env.py

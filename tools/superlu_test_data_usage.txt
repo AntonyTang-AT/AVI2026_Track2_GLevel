@@ -29,7 +29,7 @@
              export TEXT_TEST_DIR=/path/to/test/text_nb_npy   # 测试集 Nanbeige 特征目录
    若工程根下存在 data/test_nb，glevel_paths.inc.sh 会默认用它作 TEXT_TEST_DIR。
 
-   步骤 C：加载 best 权重跑 vote_test_glevel.sh（或 train_task2_glevel.py --only_test），
+   步骤 C：加载 best 权重跑 scripts/glevel_test.sh（或 train_task2_glevel.py --only_test），
            生成 TEST_OUTPUT_CSV（submission）。
    Nanbeige 训练若使用工程内 data/text_nb，则 vote_test 时必须显式 export：
              TEXT_TRAIN_DIR=<REPO>/data/text_nb

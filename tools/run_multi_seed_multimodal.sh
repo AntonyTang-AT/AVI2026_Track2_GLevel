@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 多随机种子完整训练：与 vote_train_glevel_multimodal（MM_MEDIUM_BOOST）对齐的超参，
+# 多随机种子完整训练：与 scripts/glevel_train_multimodal.sh（MM_MEDIUM_BOOST）对齐的超参，
 # 按验证集 val_acc 选出最优 checkpoint 复制到 hunt 目录（小 val 集下单 seed 方差大）。
 #
 # 用法（项目根）:
@@ -35,7 +35,7 @@ HUNT_DIR="${HUNT_DIR:-${_ROOT}/experiments/glevel_hunt_${TS}}"
 mkdir -p "$HUNT_DIR"
 
 SMB="${MM_SAMPLER_MEDIUM_BOOST:-1.5}"
-# 与 vote_train_glevel_multimodal + MM_MEDIUM_BOOST=1 一致；select_best=balanced_acc 利于三分类均衡
+# 与 scripts/glevel_train_multimodal.sh + MM_MEDIUM_BOOST=1 一致；select_best=balanced_acc 利于三分类均衡
 BASE_PRESET="--g_level_int_encoding one --glevel_arch shared_mlp --mlp_dropout 0.25 --weight_decay 0.001 --label_smoothing 0.05 --select_best balanced_acc --cross_modal_attn --cross_modal_layers 1 --modality_dropout_p 0.12 --scheduler_min_lr 1e-6 --sampler_medium_boost ${SMB}"
 
 if [ "${MM_TEMPORAL:-0}" = "1" ]; then
@@ -65,7 +65,7 @@ for s in $SEEDS; do
     export EARLY_STOP_MIN_EPOCHS="${EARLY_STOP_MIN_EPOCHS:-15}"
     export TEST_OUTPUT_CSV="$HUNT_DIR/submission_${tag}.csv"
     # 直接调用 vote_train：GLEVEL_OPT 已含全部训练超参，勿再走 multimodal 的 MM_PRESET 分支
-    bash "${_ROOT}/vote_train_glevel.sh"
+    bash "${_ROOT}/scripts/glevel_train.sh"
   } 2>&1 | tee "$log"
 
   ml="$(grep '^\[metrics_line\]' "$log" | tail -n 1 || true)"

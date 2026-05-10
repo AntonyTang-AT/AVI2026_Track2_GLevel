@@ -61,7 +61,7 @@ def main() -> int:
     print(f'  export PYTHON="{venv_dir}/bin/python"')
     print(f'  export PROJECT_ROOT="{root}"')
     print(f'  cd "{root}" && python -c "import torch; print(torch.__version__, torch.cuda.is_available())"')
-    print('  bash vote_train_glevel.sh')
+    print('  bash scripts/glevel_train.sh')
     print("\n期望最后一行 cuda 为 False。\n")
     return 0
 

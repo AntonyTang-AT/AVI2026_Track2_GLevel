@@ -32,7 +32,7 @@ g_level 改进计划书（阶段一至四）运行说明
   --early_stop_patience 25 --scheduler_min_lr 1e-6 \\
   --lr_scheduler plateau
 
-注意：`bash vote_train_glevel.sh` 若在命令行末尾传入默认 `--early_stop_patience 40`，会覆盖 `GLEVEL_OPT` 里较短的 patience；若要与计划书一致用短耐心，请 `export EARLY_STOP_PATIENCE=25`（或改脚本顺序 / 直接 `python train_task2_glevel.py ...`）。
+注意：`bash scripts/glevel_train.sh` 若在命令行末尾传入默认 `--early_stop_patience 40`，会覆盖 `GLEVEL_OPT` 里较短的 patience；若要与计划书一致用短耐心，请 `export EARLY_STOP_PATIENCE=25`（或改脚本顺序 / 直接 `python train_task2_glevel.py ...`）。
 
 余弦退火：
 
@@ -61,12 +61,12 @@ Text-GRU（计划书核心）：
 
 注意：--only_test 加载权重时须与训练使用相同 --glevel_arch / 文本维数。
 
-六、多模态 preset（vote_train_glevel_multimodal.sh）与计划书对照
+六、多模态 preset（scripts/glevel_train_multimodal.sh）与计划书对照
 ------------------------------------
 与赛方 train_data.csv / val_data.csv 对齐时，项目根：
 
   unset GLEVEL_OPT
-  bash vote_train_glevel_multimodal.sh
+  bash scripts/glevel_train_multimodal.sh
 
 环境变量（与实现一致）：
   MM_TEMPORAL=1          → --temporal_gru --temporal_pool mean --temporal_dropout 0.12

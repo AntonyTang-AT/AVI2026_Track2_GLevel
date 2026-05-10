@@ -1,20 +1,13 @@
-# 本机 Windows：使用与工程同级的 server\data 镜像训练（路径见下）
-# 用法：在 AVI2026_Track2_GLevel 目录下
-#   powershell -ExecutionPolicy Bypass -File .\vote_train_glevel_local.ps1
-# 或先设数据镜像根目录：
-#   $env:DATA_MIRROR = "D:\path\to\server\data"
+# 本机仅推理 + 导出 submission（路径同 scripts\glevel_train.local.ps1）
+#   powershell -ExecutionPolicy Bypass -File .\scripts\glevel_test.local.ps1
 
 $ErrorActionPreference = "Stop"
-$RepoRoot = $PSScriptRoot
+$RepoRoot = Split-Path -Parent $PSScriptRoot
 if ($env:DATA_MIRROR) {
     $DataMirror = $env:DATA_MIRROR
 } else {
     $DataMirror = Join-Path (Split-Path -Parent $RepoRoot) "server\data"
 }
-if (-not (Test-Path -LiteralPath $DataMirror)) {
-    Write-Error "找不到数据镜像: $DataMirror`n请设置 `$env:DATA_MIRROR 或将 server\data 放在工程上一级目录。"
-}
-
 $sl = Join-Path $DataMirror "Super-Lu\dataset"
 $featTrain = Join-Path $sl "train_feature"
 $featVal = Join-Path $sl "val_feature"
@@ -23,16 +16,15 @@ $trainCsv = Join-Path $sl "train_data.csv"
 $valCsv = Join-Path $sl "val_data.csv"
 $ratingCsv = $trainCsv
 $testCsv = Join-Path $RepoRoot "data\test_data_basic_information.csv"
-
-foreach ($p in @($featTrain, $featVal, $featTest, $trainCsv, $valCsv, $testCsv)) {
-    if (-not (Test-Path -LiteralPath $p)) { Write-Error "缺少路径: $p" }
-}
+$model = if ($env:TEST_MODEL) { $env:TEST_MODEL } else { ".\best_model_glevel.pth" }
+$textDim = if ($env:TEXT_DIM) { $env:TEXT_DIM } else { "768" }
+$outCsv = if ($env:TEST_OUTPUT_CSV) { $env:TEST_OUTPUT_CSV } else { (Join-Path $RepoRoot "reports\submissions\submission_glevel.csv") }
 
 Set-Location -LiteralPath $RepoRoot
-Write-Host "DATA_MIRROR=$DataMirror"
-Write-Host "FEAT_TEST=$featTest"
 
-python train_task2_glevel.py `
+python (Join-Path $RepoRoot "python\train_task2_glevel.py") `
+  --only_test `
+  --test_model $model `
   --train_csv $trainCsv `
   --val_csv $valCsv `
   --test_csv $testCsv `
@@ -44,7 +36,7 @@ python train_task2_glevel.py `
   --video_dir (Join-Path $featTrain "video") `
   --audio_dim 512 `
   --audio_dir (Join-Path $featTrain "audio") `
-  --text_dim 768 `
+  --text_dim ([int]$textDim) `
   --text_dir (Join-Path $featTrain "text") `
   --val_video_dir (Join-Path $featVal "video") `
   --val_audio_dir (Join-Path $featVal "audio") `
@@ -53,11 +45,5 @@ python train_task2_glevel.py `
   --test_audio_dir (Join-Path $featTest "audio") `
   --test_text_dir (Join-Path $featTest "text") `
   --batch_size 16 `
-  --num_epochs 200 `
-  --early_stop_patience 30 `
-  --lr_scheduler_patience 3 `
-  --learning_rate 1e-4 `
-  --output_model best_model_glevel.pth `
-  --loss_plot_path .\loss_img\loss_glevel.png `
-  --test_output_csv submission_glevel.csv `
-  --num_workers 0
+  --num_workers 0 `
+  --test_output_csv $outCsv

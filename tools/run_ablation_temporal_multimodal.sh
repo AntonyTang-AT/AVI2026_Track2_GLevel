@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 对照实验：MM_TEMPORAL=0 vs 1，其余与 vote_train_glevel_multimodal 默认一致。
+# 对照实验：MM_TEMPORAL=0 vs 1，其余与 scripts/glevel_train_multimodal.sh 默认一致。
 # 日志写入 LOG_DIR（默认 ./logs/ablation_temporal）。
 set -eu
 _SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -17,7 +17,7 @@ run_one() {
   echo "[ablation_temporal] === $tag (MM_TEMPORAL=$mm) → $log ===" >&2
   {
     echo "=== $tag MM_TEMPORAL=$mm at $(date -Iseconds) ==="
-    env MM_TEMPORAL="$mm" bash "${_ROOT}/vote_train_glevel_multimodal.sh"
+    env MM_TEMPORAL="$mm" bash "${_ROOT}/scripts/glevel_train_multimodal.sh"
   } 2>&1 | tee "$log"
   echo "[ablation_temporal] done $tag" >&2
 }

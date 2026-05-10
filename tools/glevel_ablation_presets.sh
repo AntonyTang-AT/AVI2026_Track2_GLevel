@@ -17,7 +17,7 @@
 # B4 标签平滑（单独试）
 #   export GLEVEL_OPT="--label_smoothing 0.05"
 #
-# B5 学习率（默认 vote_train 为 1e-4，须在 vote_train_glevel.sh 中改传参或改用 python 直接调 train_task2_glevel.py --learning_rate）
+# B5 学习率（默认 vote_train 为 1e-4，须在 scripts/glevel_train.sh 中改传参或改用 python python/train_task2_glevel.py --learning_rate）
 # 推荐：复制 vote_train 最后一行 python 调用到命令行并加 --learning_rate 5e-5
 #
 # B6 组合示例（关早停 + 跨模态 + GRU，训练久）

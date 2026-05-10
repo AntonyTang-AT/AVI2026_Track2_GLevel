@@ -7,14 +7,19 @@
 
 用法见文末示例命令。
 """
+from pathlib import Path
+import sys
+
+_REPO_ROOT = Path(__file__).resolve().parent.parent
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
 __version__ = "1.20.0"  # fused LayerNorm、StepLR、audio_text_mlp、早停默认 min_epochs=20
 
 import argparse
 import json
 import os
 import random
-import sys
-import time
 from collections import Counter
 from datetime import datetime
 
@@ -27,7 +32,7 @@ try:
 except (ImportError, OSError) as _torch_err:
     # #region agent log
     try:
-        _dbg_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "debug-f0e227.log")
+        _dbg_path = str(_REPO_ROOT / "debug-f0e227.log")
         with open(_dbg_path, "a", encoding="utf-8") as _df:
             _df.write(
                 json.dumps(
@@ -1352,7 +1357,7 @@ def main():
         ),
     )
     p.add_argument("--test_model", type=str, default="best_model_glevel.pth")
-    p.add_argument("--test_output_csv", type=str, default="submission_glevel.csv")
+    p.add_argument("--test_output_csv", type=str, default="reports/submissions/submission_glevel.csv")
     p.add_argument(
         "--val_errors_csv",
         type=str,

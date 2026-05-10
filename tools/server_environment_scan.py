@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 在服务器上扫描 AVI2026_Track2_GLevel 训练所需路径、环境变量与关键文件，生成本地可读的报告，
-便于对照 vote_train_glevel.sh 默认值与真实挂载目录。
+便于对照 scripts/glevel_train.sh 默认值与真实挂载目录。
 
 输出（默认写入项目根下 artifacts/）:
   - server_scan_latest.json   机器可读
@@ -155,7 +155,7 @@ def main() -> int:
     out_dir = Path(args.out_dir).resolve() if args.out_dir.strip() else root / "artifacts"
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    # 与 vote_train_glevel.sh 一致的默认路径
+    # 与 scripts/glevel_train.sh 一致的默认路径
     def E(name: str, default: str) -> str:
         v = os.environ.get(name, "").strip()
         return v if v else default

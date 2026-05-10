@@ -19,6 +19,6 @@ nohup env CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-1}" PYTHON="${_MAGNUS_PY
   VAL_CSV="${VAL_CSV:-/data/Super-Lu/dataset/val_data.csv}" TEST_CSV="${TEST_CSV:-/data/Super-Lu/dataset/test_data_basic_information.csv}" \
   RATING_CSV="${RATING_CSV:-/data/Super-Lu/dataset/train_data.csv}" \
   NUM_EPOCHS="${PHASE_C_NUM_EPOCHS:-30}" LEARNING_RATE="${PHASE_C_LR:-3e-5}" EARLY_STOP_PATIENCE="${PHASE_C_ES:-15}" EARLY_STOP_MIN_EPOCHS="${PHASE_C_ES_MIN:-5}" \
-  bash "${_ROOT}/tools/vote_train_glevel_pseudo_augment.sh" >>"${LOG}" 2>&1 &
+  bash "${_ROOT}/tools/glevel_train_pseudo_augment.sh" >>"${LOG}" 2>&1 &
 echo $! >"${PID_FILE}"
 echo "[run_phaseC_gpu_background] PID=$(cat "${PID_FILE}") CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-1} log=${LOG}"

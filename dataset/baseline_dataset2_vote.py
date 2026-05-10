@@ -299,7 +299,7 @@ def _drop_rows_missing_features(
             if first_fail and first_fail[0] == "text" and len(lt) == 0:
                 print(
                     "[dataset] 提示: text 主目录下无任何 .npy。若仅用 Nanbeige 试跑目录，请 "
-                    "export NANBEIGE_TEXT_SUBDIR=text_nb_smoke（见 vote_train_glevel.sh）"
+                    "export NANBEIGE_TEXT_SUBDIR=text_nb_smoke（见 scripts/glevel_train.sh）"
                     " 或手动 export TEXT_TRAIN_DIR=.../text_nb_smoke；全量训练需提取到与 CSV 全 id 对齐的目录。",
                     file=sys.stderr,
                 )

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # 提交前仅测「测试集」侧：FEAT_TEST 下 audio/video 与 TEXT_TEST_DIR 文本 .npy 是否覆盖 TEST_CSV。
-# 不检查 val。通过后再 bash vote_test_glevel.sh。
+# 不检查 val。通过后再 bash scripts/glevel_test.sh。
 set -eu
 _SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 _ROOT="$(cd "${_SCRIPT_DIR}/.." && pwd)"
@@ -46,4 +46,4 @@ echo "" >&2
 echo "[preflight_test_submission] 通过。测试命令示例:" >&2
 echo "  export TEST_MODEL=./best_model_glevel_multimodal_plus.pth" >&2
 echo "  # 推理时 GLEVEL_OPT 须与训练一致（architecture）" >&2
-echo "  bash vote_test_glevel.sh" >&2
+echo "  bash scripts/glevel_test.sh" >&2

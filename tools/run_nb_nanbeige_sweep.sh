@@ -52,7 +52,7 @@ for s in $SEEDS; do
   export TEST_OUTPUT_CSV="${subdir}/submission.csv"
   echo "[nb_sweep] ${tag} → $log" >&2
   ec=0
-  bash "${_ROOT}/vote_train_glevel.sh" 2>&1 | tee "$log" || ec=$?
+  bash "${_ROOT}/scripts/glevel_train.sh" 2>&1 | tee "$log" || ec=$?
   if [[ "$ec" != "0" ]]; then
     echo "$s,NA,NA,NA,NA,NA,$OUTPUT_MODEL,$log,$ec" >>"$OUT_CSV"
     continue

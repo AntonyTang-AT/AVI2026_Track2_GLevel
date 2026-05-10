@@ -8,7 +8,7 @@
 
 用法（仓库根）:
   python tools/build_deepseek_zyn_comparison_table.py \\
-    --deepseek-json deepseek_ens_r3_vote_zyn.json \\
+    --deepseek-json reports/deepseek/deepseek_ens_r3_vote_zyn.json \\
     --out-csv reports/deepseek_zyn_comparison_table.csv
 """
 from __future__ import annotations
@@ -24,7 +24,7 @@ _REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-from glevel_labels import parse_overall_glevel_value
+from dataset.glevel_labels import parse_overall_glevel_value
 
 # 无独立日志时，与已知训练/推理管线对齐的近似 val_acc（官方 val 64 条）
 ALIAS_VAL_ACC: dict[str, float] = {
@@ -154,7 +154,8 @@ def _build_val_acc_map(root: Path) -> dict[str, float]:
 
 
 def _deepseek_mean_val_acc(root: Path, pattern: str = "deepseek_ens_r3_report_zyn_run*.json") -> float | None:
-    reports = sorted(root.glob(pattern))
+    dk_dir = root / "reports" / "deepseek"
+    reports = sorted(dk_dir.glob(pattern))
     if not reports:
         return None
     accs: list[float] = []
@@ -171,7 +172,7 @@ def _deepseek_mean_val_acc(root: Path, pattern: str = "deepseek_ens_r3_report_zy
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--deepseek-json", type=Path, default=Path("deepseek_ens_r3_vote_zyn.json"))
+    ap.add_argument("--deepseek-json", type=Path, default=Path("reports/deepseek/deepseek_ens_r3_vote_zyn.json"))
     ap.add_argument("--peer-dir", type=Path, default=Path("external/submissions_peer"))
     ap.add_argument("--pseudo-csv", type=Path, default=Path("external/submissions_peer/test_pseudo_iter2_peers4_inferbias_top6_mass.csv"))
     ap.add_argument("--out-csv", type=Path, default=Path("reports/deepseek_zyn_comparison_table.csv"))

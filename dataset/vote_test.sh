@@ -23,7 +23,7 @@ TEXT_DIM="${TEXT_DIM:-768}"
 
 mkdir -p ./train_print_log ./loss_img ./logs
 
-python -u train_task2_vote.py \
+python -u python/train_task2_vote.py \
   --only_test \
   --test_model "$TEST_MODEL" \
   --train_csv "$TRAIN_CSV" \

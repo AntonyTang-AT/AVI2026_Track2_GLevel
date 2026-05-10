@@ -4,7 +4,7 @@
 
 用法（仓库根）:
   python tools/compare_best_models_vs_deepseek.py \\
-    --deepseek deepseek_annotations.json \\
+    --deepseek reports/deepseek/deepseek_annotations.json \\
     external/submissions_peer/submission_masswinner_S_plateau_ln_seed28.csv ...
 
 默认对比一组「当前最优」提交路径（可额外传入更多 CSV）。
@@ -22,7 +22,7 @@ _REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-from glevel_labels import parse_overall_glevel_value
+from dataset.glevel_labels import parse_overall_glevel_value
 
 from sklearn.metrics import confusion_matrix
 
@@ -93,8 +93,8 @@ def main() -> None:
     ap.add_argument(
         "--deepseek",
         type=Path,
-        default=Path("deepseek_annotations.json"),
-        help="annotate_with_deepseek.py 输出",
+        default=Path("reports/deepseek/deepseek_annotations.json"),
+        help="python/annotate_with_deepseek.py 输出（默认 reports/deepseek/…）",
     )
     ap.add_argument(
         "submissions",

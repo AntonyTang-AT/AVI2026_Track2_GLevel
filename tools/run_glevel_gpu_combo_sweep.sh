@@ -3,7 +3,7 @@
 #
 # 改进 A（全模态 shared_mlp + cross-modal）：可选 --fused_layer_norm；可选 StepLR（--lr_scheduler step）。
 # 改进 B（audio_text_mlp）：无 cross-modal；可选 --fused_layer_norm；可选 StepLR。
-# 早停 / Plateau 等与 vote_train_glevel 对齐（EARLY_STOP_MIN_EPOCHS 默认 20）。
+# 早停 / Plateau 等与 scripts/glevel_train.sh 对齐（EARLY_STOP_MIN_EPOCHS 默认 20）。
 #
 # 用法（工程根）:
 #   HUNT_DIR=./experiments/gpu_combo_sweep/run1
@@ -355,12 +355,12 @@ _train_one() {
 
   echo "[gpu_combo_sweep] === ${combo_id} seed=${seed} slot=${part:-—} cuda_visible=${CUDA_VISIBLE_DEVICES:-<unset>} → ${log}" >&2
   if [[ "${DRY_RUN}" == "1" ]]; then
-    echo "${PYTHON}" train_task2_glevel.py ... --seed "${seed}" "${common[@]}" "${extra[@]}" "${train_fb_flag[@]}" "${test_val_fb_flag[@]}" >&2
+    echo "${PYTHON}" "${_ROOT}/python/train_task2_glevel.py" ... --seed "${seed}" "${common[@]}" "${extra[@]}" "${train_fb_flag[@]}" "${test_val_fb_flag[@]}" >&2
     return 0
   fi
 
   local ec=0
-  "${PYTHON}" "${_ROOT}/train_task2_glevel.py" \
+  "${PYTHON}" "${_ROOT}/python/train_task2_glevel.py" \
     --train_csv "${tr_csv}" \
     --val_csv "${va_csv}" \
     --test_csv "${te_csv}" \

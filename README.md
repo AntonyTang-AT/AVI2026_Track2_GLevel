@@ -11,13 +11,14 @@
 
 | 模块 | 说明 |
 |------|------|
-| **训练** | `train_task2_glevel.py`：多模态 G-Level 主训练脚本（验证指标、早停、可选交叉模态注意力等）。 |
-| **推理 / 提交** | `predict_submission.py`：按 checkpoint 与特征目录生成测试集 `submission.csv`。 |
-| **数据管线** | `dataset/baseline_dataset2_vote.py`：读取 CSV + 音频/视频/文本 `.npy` 特征，含缺失回退等逻辑。 |
-| **GPU 扫参** | `tools/run_glevel_gpu_combo_sweep.sh`：多组超参 × 多种子；可选「合并 train+val 池随机划分」模式（`POOL_RANDOM_SPLITS`）或稳定性划分（`PARTITION_ROUNDS`，与 pool 模式互斥）。 |
+| **训练** | `python/train_task2_glevel.py`：多模态 G-Level 主训练（验证指标、早停、可选交叉模态注意力等）。 |
+| **推理 / 提交** | `python/predict_submission.py`：按 checkpoint 与特征目录生成测试集 `submission.csv`。 |
+| **数据管线** | `dataset/baseline_dataset2_vote.py`：读取 CSV + 音频/视频/文本 `.npy` 特征；标签工具 `dataset/glevel_labels.py`。 |
+| **Shell 入口** | `scripts/glevel_train.sh`、`scripts/glevel_test.sh`、`scripts/glevel_train_multimodal.sh`、`scripts/glevel_kfold.sh`、`scripts/glevel_smoke_one_click.sh`；原 Track2 回归见 `scripts/track2_train.sh`。 |
+| **GPU 扫参** | `tools/run_glevel_gpu_combo_sweep.sh`：多组超参 × 多种子；可选合并 train+val 池（`POOL_RANDOM_SPLITS`）或稳定性划分（`PARTITION_ROUNDS`，与 pool 互斥）。 |
 | **伪标签 / 集成** | `tools/build_*pseudo*.py`、`tools/ensemble_glevel_csv.py`、`external/submissions_peer/` 等。 |
-| **DeepSeek 辅助标注** | `annotate_with_deepseek.py`、`annotate_deepseek_interactive.py` 及相关 `tools/build_deepseek_*.py`。 |
-| **启发式测试集恢复实验** | `heuristic_test_recovery/`（众包/一致性搜索，非赛方官方流程）。 |
+| **DeepSeek 标注** | `python/annotate_with_deepseek.py` 等；默认 JSON 输出目录 **`reports/deepseek/`**。 |
+| **启发式测试恢复** | `heuristic_test_recovery/`（非赛方官方流程）。 |
 
 更细的产出路径说明见 `reports/DATA_LABEL_PATHS.txt`。
 
@@ -77,10 +78,10 @@ bash tools/sync_superlu_official_csv.sh
 
 ### 单次训练（示例）
 
-入口脚本见根目录 **`vote_train_glevel.sh`**（内部调用 `train_task2_glevel.py`，可按需改 CSV 与特征路径）。或直接：
+推荐：在仓库根目录执行 **`bash scripts/glevel_train.sh`**（内部调用 `python/train_task2_glevel.py`）。或直接：
 
 ```bash
-python train_task2_glevel.py --help
+python python/train_task2_glevel.py --help
 ```
 
 ### GPU 组合扫参（含合并 train+val 池 + 多随机划分）
@@ -104,7 +105,7 @@ bash tools/run_glevel_gpu_combo_sweep.sh
 ### 生成提交 CSV
 
 ```bash
-python predict_submission.py --help
+python python/predict_submission.py --help
 ```
 
 具体参数需与你的 checkpoint、`test_csv`、特征目录一致。
@@ -113,61 +114,50 @@ python predict_submission.py --help
 
 ## 项目目录结构（当前仓库）
 
-以下为 **纳入版本控制的顶层布局**（不含 `.gitignore` 排除的本地大目录）：
+根目录仅保留 **`README.md`、`LICENSE`、`requirements*.txt`、配置与说明**；代码与入口按目录归类：
 
 ```text
 AVI2026_Track2_GLevel/
-├── README.md                 # 本说明
-├── LICENSE                   # MIT
-├── requirements.txt          # Python 依赖（另有 requirements-core.txt）
+├── README.md / LICENSE / requirements.txt / requirements-core.txt
 ├── .gitignore / .gitattributes
 │
-├── train_task2_glevel.py     # G-Level 主训练
-├── train_task2_vote.py       # 原赛道回归任务训练入口（继承自冠军骨架）
-├── predict_submission.py     # 测试集推理写出 CSV
-├── vote_train_glevel.sh / vote_train.sh / vote_test*.sh / vote_kfold_glevel.sh
-├── one_click_test.sh / one_click_kfold_glevel.py
-├── glevel_labels.py
-├── annotate_with_deepseek.py / annotate_deepseek_interactive.py
+├── python/                         # Python 主入口（请在仓库根运行）
+│   ├── train_task2_glevel.py       # G-Level 训练
+│   ├── train_task2_vote.py         # 原 Track2 回归训练
+│   ├── predict_submission.py       # 推理写出 submission
+│   ├── one_click_kfold_glevel.py   # K 折编排
+│   ├── annotate_with_deepseek.py
+│   └── annotate_deepseek_interactive.py
+│
+├── scripts/                        # Bash / PowerShell 便捷入口（命名统一 glevel_* / track2_*）
+│   ├── glevel_train.sh / glevel_test.sh / glevel_kfold.sh
+│   ├── glevel_train_multimodal.sh
+│   ├── glevel_smoke_one_click.sh
+│   ├── track2_train.sh / track2_test.sh
+│   └── glevel_train.local.ps1 / glevel_test.local.ps1
 │
 ├── dataset/
-│   └── baseline_dataset2_vote.py   # 多模态 Dataset、collate、特征解析
-├── model/
-│   └── vote_model/
-│       ├── M_model.py
-│       └── sam.py
-├── features/
-│   ├── extract_text.py / extract_video.py
-│   └── __init__.py
-│
-├── data/
-│   ├── superlu_official/           # 官方 CSV 镜像（sync 脚本维护）
-│   ├── train_data.csv / val_data.csv / test_data_basic_information.csv 等
-│   ├── text_nb/ / text_nb_val/ / test_nb/   # 文本特征等（np）
-│   └── test_feature/ …                     # 部分测试特征
-│
-├── tools/                      # 扫参、划分、评估、伪标签、环境诊断等脚本（.sh + .py）
-│   ├── glevel_paths.inc.sh
-│   ├── sync_superlu_official_csv.sh
-│   ├── run_glevel_gpu_combo_sweep.sh
-│   ├── run_glevel_gpu_combo_sweep_cv.sh
-│   ├── run_pool_merged_wide_background.sh
-│   ├── make_merged_pool_train_val_split.py
-│   ├── make_stability_data_partition.py
-│   ├── copy_top_k_models.py
-│   ├── summarize_glevel_combo_sweep.py
-│   └── …（其余评估 / kfold / NanBeige / 伪标签 / DeepSeek 工具）
-│
-├── external/                   # 外部提交样例、Peer 伪标签等
-├── heuristic_test_recovery/    # 启发式测试恢复实验代码与 example_out 说明
-├── reports/                    # 报告、路径说明、对比表等
-├── background_figs/            # README 用框架示意图
-├── loss_img/                   # 损失曲线等图片输出目录（若存在）
-├── args_log/ / logs/           # 运行参数快照（仅 .gitkeep 提交，具体 json 忽略）
+│   ├── baseline_dataset2_vote.py
+│   └── glevel_labels.py
+├── model/vote_model/…
+├── features/…
+├── data/（含 superlu_official/ 官方 CSV 镜像）
+├── reports/
+│   ├── deepseek/                   # DeepSeek JSON / 缓存（纳入版本控制的归档）
+│   ├── submissions/               # 示例 submission CSV
+│   └── DATA_LABEL_PATHS.txt
+├── tools/                          # 扫参、划分、评估、伪标签等（大量 .sh / .py）
+├── external/
+├── heuristic_test_recovery/
+├── background_figs/
+├── loss_img/
+├── args_log/ / logs/（仅 .gitkeep 提交）
 └── train_print_log/
 ```
 
-本地若存在 **`experiments/`**、**`kfold_*`**、根目录 **`best_model*.pth`** 等，属正常运行产物，默认 **不推送** 到 GitHub。
+默认提交与训练写出路径示例：**`reports/submissions/submission_glevel.csv`**（可用环境变量 `TEST_OUTPUT_CSV` 覆盖）。
+
+本地 **`experiments/`**、**`kfold_*`**、根目录 **`best_model*.pth`** 等为运行产物，默认 **不进入 Git**。
 
 ---
 

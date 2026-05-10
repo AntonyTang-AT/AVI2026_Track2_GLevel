@@ -34,7 +34,7 @@ if [ "${SPLIT_LABELS:-1}" = "1" ]; then
 fi
 
 # shellcheck disable=SC2086
-"${PYTHON}" train_task2_glevel.py \
+"${PYTHON}" "${_ROOT}/python/train_task2_glevel.py" \
   --only_test \
   --ensemble_checkpoints ${CKPTS} \
   --train_csv "${TRAIN_CSV}" \

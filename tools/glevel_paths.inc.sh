@@ -1,4 +1,4 @@
-# 多模态 g_level：数据路径默认值（与 vote_train_glevel.sh / vote_test_glevel.sh 一致）
+# 多模态 g_level：数据路径默认值（与 scripts/glevel_train.sh / scripts/glevel_test.sh 一致）
 # 用法：须先 cd 到工程根（PWD=项目根）再 source；可通过 export 覆盖任意变量后再 source。
 # Nanbeige：工程根下 data/text_nb、data/text_nb_val、data/test_nb 若存在则优先（避免 FEAT_*/text_nb 指向未挂载的 Super-Lu）。
 # 可改工程根： export GLEVEL_REPO_ROOT=/path/to/AVI2026_Track2_GLevel

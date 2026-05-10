@@ -16,7 +16,7 @@ _REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-from glevel_labels import parse_overall_glevel_value
+from dataset.glevel_labels import parse_overall_glevel_value
 
 
 def _read_sub_123(path: Path) -> dict[str, int]:

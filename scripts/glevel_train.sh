@@ -4,12 +4,13 @@
 #   /data/Super-Lu/dataset/train_data.csv val_data.csv
 #   /data/Super-Lu/dataset/train_feature|val_feature/{audio,video,text}/*.npy
 #   /data/AVI2026/test_feature/{audio,video,text}/*.npy  ← 测试 id，勿用 train_feature
-# CRLF 换行会导致 Linux 下 set/cd 报错；修复: sed -i 's/\r$//' vote_train_glevel.sh
+# CRLF 换行会导致 Linux 下 set/cd 报错；修复: sed -i 's/\r$//' scripts/glevel_train.sh
 # 若 python 在 import torch 阶段报 nccl*: undefined symbol：为 PyTorch 与系统 NCCL/CUDA 栈不匹配，
 # 请在新环境中按 pytorch.org 重装 CUDA 版，或改用 CPU 版 wheel（见 train_task2_glevel 报错全文）。
 set -eu
 _SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "${PROJECT_ROOT:-$_SCRIPT_DIR}"
+_ROOT="$(cd "${_SCRIPT_DIR}/.." && pwd)"
+cd "${PROJECT_ROOT:-$_ROOT}"
 
 # DataLoader：默认 4 worker；严格复现或小 val 调试用： export NUM_WORKERS=0
 # 解释器：默认 python。若 base 的 CUDA torch+NCCL 损坏，可根本规避：先
@@ -18,17 +19,17 @@ cd "${PROJECT_ROOT:-$_SCRIPT_DIR}"
 # 或新建 conda 环境后： export PYTHON=/path/to/env/bin/python
 PYTHON="${PYTHON:-python}"
 
-# 数据路径：与 vote_test_glevel.sh、tools/run_phase1_svm.sh 共用 tools/glevel_paths.inc.sh
+# 数据路径：与 scripts/glevel_test.sh、tools/run_phase1_svm.sh 共用 tools/glevel_paths.inc.sh
 # Nanbeige：export NANBEIGE_TEXT=1；试跑子目录 export NANBEIGE_TEXT_SUBDIR=text_nb_smoke
 # 测试集 Nanbeige 文本：若工程内存在 data/test_nb，默认作 TEXT_TEST_DIR；否则见 FEAT_TEST/text_nb。可手动 export TEXT_TEST_DIR。
 # shellcheck source=tools/glevel_paths.inc.sh
-. "${_SCRIPT_DIR}/tools/glevel_paths.inc.sh"
+. "${_ROOT}/tools/glevel_paths.inc.sh"
 
 _NB_SUB="${NANBEIGE_TEXT_SUBDIR:-text_nb}"
 if [ "${NANBEIGE_TEXT:-0}" = "1" ]; then
   case "${_NB_SUB}" in
     *smoke*)
-      echo "[vote_train_glevel] NANBEIGE smoke：TEXT_VAL_DIR/TEXT_TEST_DIR 与 TRAIN 文本目录相同（${_NB_SUB}）。若 val 仍全被剔除，请对验证集转写单独提取到含 val id 的目录并 export TEXT_VAL_DIR=..." >&2
+      echo "[glevel_train] NANBEIGE smoke：TEXT_VAL_DIR/TEXT_TEST_DIR 与 TRAIN 文本目录相同（${_NB_SUB}）。若 val 仍全被剔除，请对验证集转写单独提取到含 val id 的目录并 export TEXT_VAL_DIR=..." >&2
       ;;
   esac
 fi
@@ -41,7 +42,7 @@ fi
 #   TTA 测试：在 GLEVEL_OPT 中加 --tta_times 8 --tta_noise_std 0.01（仅影响 only_test/predict_test）
 #   SWA：--swa_start_epoch 30 --swa_lr 1e-4 --output_swa_model ./best_swa.pth
 #   export LOSS_PLOT_PATH=./loss_img/loss_glevel.png
-#   export TEST_OUTPUT_CSV=submission_glevel.csv
+#   export TEST_OUTPUT_CSV=reports/submissions/submission_glevel.csv
 
 # 赛方 train/val CSV 中 g_level 为 1/2/3 时与训练一致；亦会被 train_task2_glevel 自动检测（含 3 且无 0 → one）。
 # 若未设置 GLEVEL_OPT，默认显式传入，避免依赖隐式 autofix、日志更清晰。
@@ -75,21 +76,21 @@ fi
 
 # 路线 A：数据/特征补全预检（与当前 export 一致；通过后再训）： export ROUTE_A_PREFLIGHT=1
 if [ "${ROUTE_A_PREFLIGHT:-0}" = "1" ]; then
-  echo "[vote_train_glevel] ROUTE_A_PREFLIGHT=1 → bash tools/route_a_complete.sh" >&2
-  bash "${_SCRIPT_DIR}/tools/route_a_complete.sh"
+  echo "[glevel_train] ROUTE_A_PREFLIGHT=1 → bash tools/route_a_complete.sh" >&2
+  bash "${_ROOT}/tools/route_a_complete.sh"
 fi
 
 # 预检 PyTorch，失败时追加 debug-f0e227.log 并退出（跳过：export SKIP_TORCH_PREFLIGHT=1）
 if [ "${SKIP_TORCH_PREFLIGHT:-0}" != "1" ]; then
   if ! "${PYTHON}" -c "import torch"; then
-    echo "[vote_train_glevel] PyTorch 导入失败。正在追加 tools/diagnose_torch_env.py 到 debug-f0e227.log …" >&2
-    "${PYTHON}" tools/diagnose_torch_env.py 2>/dev/null || true
-    bash "${_SCRIPT_DIR}/tools/print_torch_env_fix_hint.sh" 2>/dev/null || true
+    echo "[glevel_train] PyTorch 导入失败。正在追加 tools/diagnose_torch_env.py 到 debug-f0e227.log …" >&2
+    "${PYTHON}" "${_ROOT}/tools/diagnose_torch_env.py" 2>/dev/null || true
+    bash "${_ROOT}/tools/print_torch_env_fix_hint.sh" 2>/dev/null || true
     exit 2
   fi
 fi
 
-"${PYTHON}" train_task2_glevel.py \
+"${PYTHON}" "${_ROOT}/python/train_task2_glevel.py" \
   --train_csv "${TRAIN_CSV}" \
   --val_csv "${VAL_CSV}" \
   --test_csv "${TEST_CSV}" \
@@ -115,7 +116,7 @@ fi
   --learning_rate "${LEARNING_RATE:-1e-4}" \
   --output_model "${OUTPUT_MODEL:-best_model_glevel.pth}" \
   --loss_plot_path "${LOSS_PLOT_PATH:-./loss_img/loss_glevel.png}" \
-  --test_output_csv "${TEST_OUTPUT_CSV:-submission_glevel.csv}" \
+  --test_output_csv "${TEST_OUTPUT_CSV:-${_ROOT}/reports/submissions/submission_glevel.csv}" \
   "${VAL_ERR_ARG[@]}" \
   --num_workers "${NUM_WORKERS:-4}" \
   --lr_scheduler_patience "${LR_SCHEDULER_PATIENCE:-5}" \

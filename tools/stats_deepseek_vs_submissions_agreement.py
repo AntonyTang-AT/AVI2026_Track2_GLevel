@@ -8,8 +8,8 @@
 
 用法（仓库根目录）:
   python tools/stats_deepseek_vs_submissions_agreement.py \\
-    --deepseek deepseek_ens_r3_vote_zyn.json \\
-    --out-csv deepseek_zyn_agree_counts.csv
+    --deepseek reports/deepseek/deepseek_ens_r3_vote_zyn.json \\
+    --out-csv reports/deepseek/deepseek_zyn_agree_counts.csv
 """
 from __future__ import annotations
 
@@ -24,7 +24,7 @@ _REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-from glevel_labels import parse_overall_glevel_value
+from dataset.glevel_labels import parse_overall_glevel_value
 
 
 def _read_submission_raw(path: Path) -> dict[str, str]:

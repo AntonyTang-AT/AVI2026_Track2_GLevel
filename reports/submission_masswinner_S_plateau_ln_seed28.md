@@ -29,7 +29,7 @@
 ### 2.2 输入与文本路线（Nanbeige）
 
 - **音频 / 视频**：维度各 **512**，来自赛方特征目录（训练用 `train_feature`，验证用 `val_feature`，测试用 `test_feature`）。  
-- **文本**：不用传统 768 维句向量，而是用 **Nanbeige 2560 维** 表征；工程内路径分别为 **`data/text_nb`**（训练）、**`data/text_nb_val`**（验证）、**`data/test_nb`**（测试），与 `vote_train_glevel.sh` 一类脚本一致。
+- **文本**：不用传统 768 维句向量，而是用 **Nanbeige 2560 维** 表征；工程内路径分别为 **`data/text_nb`**（训练）、**`data/text_nb_val`**（验证）、**`data/test_nb`**（测试），与 `scripts/glevel_train.sh` 一类脚本一致。
 
 这样做的直觉是：**文本信息量很大**，若只用短向量容易丢语义；Nanbeige 维数更高，与音视频拼接后，后面的融合模块有更多「可调空间」。
 

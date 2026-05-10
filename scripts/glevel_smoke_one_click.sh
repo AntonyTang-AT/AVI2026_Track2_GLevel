@@ -8,20 +8,20 @@
 #     ./AVI2026_Track2_GLevel/  user@server:~/AVI2026_Track2_GLevel/
 #
 # 或使用 scp（端口示例 -P 24322）：
-#   scp -P 24322 -r dataset/baseline_dataset2_vote.py train_task2_glevel.py \\
+#   scp -P 24322 -r dataset/baseline_dataset2_vote.py python/train_task2_glevel.py \\
 #       emo@183.196.130.56:~/antonytang/AVI2026_Track2_GLevel/
 #
-# ⚠️ 须 scp 到「你 ssh 上去跑 bash one_click_test.sh 的那台机器」的同一目录。
+# ⚠️ 须 scp 到「你 ssh 上去跑 bash scripts/glevel_smoke_one_click.sh 的那台机器」的同一目录。
 #    若登录跳板机 IP 与 计算节点 node243 不同盘，请把文件同步到 node243 可见的路径
 #    （共享家目录 / NFS / 或在 node243 上再 scp/rsync 一次）。
 #
 # 服务器上：
 #   cd ~/AVI2026_Track2_GLevel
-#   chmod +x one_click_test.sh
+#   chmod +x scripts/glevel_smoke_one_click.sh
 #   export CONDA_ENV=365Aspects-main          # 可选，有 conda 环境则设
-#   bash one_click_test.sh                    # 默认：检查依赖 + 特征形状 + 短训 1 epoch
+#   bash scripts/glevel_smoke_one_click.sh    # 默认：检查依赖 + 特征形状 + 短训 1 epoch
 #
-# 环境变量（可选，与 vote_train_glevel.sh 一致）：
+# 环境变量（可选，与 scripts/glevel_train.sh 一致）：
 #   QUICK_ONLY=1           只做环境/导入/特征检查，不训练
 #   PIP_INSTALL=1          先 pip install -r requirements.txt
 #   RUN_SHORT_TRAIN=0      跳过短训（默认 1：在数据就绪时跑 1 个 epoch）
@@ -33,14 +33,15 @@
 # -----------------------------------------------------------------------------
 # 若在 Linux 上出现: invalid option / $'\r': command not found / cd: '...\r': No such file
 # 说明脚本被保存成 Windows 换行(CRLF)。在项目根执行一次修复后再 bash：
-#   sed -i 's/\r$//' one_click_test.sh vote_train_glevel.sh vote_test_glevel.sh
-# 或使用 dos2unix（需安装）。自检：file one_click_test.sh 不应含 “CRLF line terminators”。
+#   sed -i 's/\r$//' scripts/glevel_smoke_one_click.sh scripts/glevel_train.sh scripts/glevel_test.sh
+# 或使用 dos2unix（需安装）。自检：file scripts/glevel_smoke_one_click.sh 不应含 “CRLF line terminators”。
 # -----------------------------------------------------------------------------
 # =============================================================================
 set -eu
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "$ROOT"
+_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT="$(cd "${_SCRIPT_DIR}/.." && pwd)"
+cd "${PROJECT_ROOT:-$ROOT}"
 
 TRAIN_CSV="${TRAIN_CSV:-/data/Super-Lu/dataset/train_data.csv}"
 VAL_CSV="${VAL_CSV:-/data/Super-Lu/dataset/val_data.csv}"
@@ -64,14 +65,14 @@ if [ "${SPLIT_LABELS:-1}" = "1" ]; then
 fi
 
 echo "=============================================="
-echo "[one_click_test] ROOT=$ROOT"
+echo "[glevel_smoke_one_click] ROOT=$ROOT"
 echo "=============================================="
 
 if [ -n "${CONDA_ENV:-}" ]; then
   # shellcheck disable=SC1091
   source "$(conda info --base)/etc/profile.d/conda.sh"
   conda activate "$CONDA_ENV"
-  echo "[one_click_test] conda: $CONDA_ENV"
+  echo "[glevel_smoke_one_click] conda: $CONDA_ENV"
 fi
 
 if [ "${PIP_INSTALL}" = "1" ]; then
@@ -91,7 +92,7 @@ print("import dataset + model: ok")
 PY
 
 echo "== 2) 训练脚本参数（确认含 glevel / labels_in_split_csv）"
-python train_task2_glevel.py --help | grep -E "glevel|labels_in_split|text_dim" | head -n 6 || true
+python "${ROOT}/python/train_task2_glevel.py" --help | grep -E "glevel|labels_in_split|text_dim" | head -n 6 || true
 
 echo "== 3) 特征目录与抽样 shape（FEAT_TRAIN=$FEAT_TRAIN）"
 if [ -d "${FEAT_TRAIN}/audio" ] && [ -d "${FEAT_TRAIN}/video" ] && [ -d "${FEAT_TRAIN}/text" ]; then
@@ -130,7 +131,7 @@ mkdir -p ./smoke_check ./smoke_check/loss_img ./smoke_check/logs
 
 echo "== 4) 短训 1 epoch（num_workers=0，结果写入 smoke_check/）"
 set +e
-python train_task2_glevel.py \
+python "${ROOT}/python/train_task2_glevel.py" \
   --train_csv "$TRAIN_CSV" \
   --val_csv "$VAL_CSV" \
   --test_csv "$TEST_CSV" \
@@ -164,13 +165,13 @@ set -e
 
 if [ "$EC" -eq 0 ]; then
   echo "=============================================="
-  echo "[one_click_test] 短训成功。模型: ./smoke_check/best_smoke.pth"
-  echo "可继续: bash vote_train_glevel.sh  全量训练"
-  echo "或仅推理: TEST_MODEL=./smoke_check/best_smoke.pth bash vote_test_glevel.sh"
+  echo "[glevel_smoke_one_click] 短训成功。模型: ./smoke_check/best_smoke.pth"
+  echo "可继续: bash scripts/glevel_train.sh  全量训练"
+  echo "或仅推理: TEST_MODEL=./smoke_check/best_smoke.pth bash scripts/glevel_test.sh"
   echo "=============================================="
 else
   echo "=============================================="
-  echo "[one_click_test] 短训失败 (exit $EC)。请根据上方 Traceback 检查 CSV / 特征 / TEXT_DIM。"
+  echo "[glevel_smoke_one_click] 短训失败 (exit $EC)。请根据上方 Traceback 检查 CSV / 特征 / TEXT_DIM。"
   echo "=============================================="
   exit "$EC"
 fi
