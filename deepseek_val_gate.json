@@ -1,0 +1,464 @@
+{
+  "n": 64,
+  "accuracy": 0.359375,
+  "balanced_accuracy": 0.35294117647058826,
+  "per_class_gold_counts": {
+    "HIGH": 25,
+    "MEDIUM": 17,
+    "LOW": 22
+  },
+  "per_class_pred_counts": {
+    "LOW": 63,
+    "MEDIUM": 1
+  },
+  "rows": [
+    {
+      "id": "586935b7e16d530001b34787",
+      "gold": "HIGH",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "63b6c18f4f13282703357493",
+      "gold": "MEDIUM",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "5b214ff965753400017af117",
+      "gold": "HIGH",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "5dec18ea1aaabf30d92ad722",
+      "gold": "HIGH",
+      "pred": "LOW",
+      "confidence": 0.85,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "60bfd72cbf383d740b0d9b00",
+      "gold": "MEDIUM",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "5e531b2205acdb33c0f5f24c",
+      "gold": "LOW",
+      "pred": "LOW",
+      "confidence": 0.9,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "62dc761564191bc28a87e7c7",
+      "gold": "HIGH",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "55b3120cfdf99b6ef6263a71",
+      "gold": "HIGH",
+      "pred": "LOW",
+      "confidence": 0.9,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "615b1bbb04fb28394b341ee9",
+      "gold": "MEDIUM",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "6314c1e76c3f71e2127f1976",
+      "gold": "LOW",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "62c63362e7342ad8be294866",
+      "gold": "LOW",
+      "pred": "LOW",
+      "confidence": 0.9,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "636330b7f97a8198974a367f",
+      "gold": "HIGH",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "600db8fbc1442757df86e700",
+      "gold": "HIGH",
+      "pred": "LOW",
+      "confidence": 0.9,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "6282486284f992485dcdf4ea",
+      "gold": "MEDIUM",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "63b70545b179c880f765bc4c",
+      "gold": "LOW",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "5f989fa02b5a611b2df1a305",
+      "gold": "MEDIUM",
+      "pred": "MEDIUM",
+      "confidence": 0.6,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "5c095c8a217d6000011193b8",
+      "gold": "LOW",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "5c0a22affe40eb00016262b6",
+      "gold": "MEDIUM",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "614e35b2138b395a5410d87a",
+      "gold": "HIGH",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "5e73fc27257569377493feaa",
+      "gold": "HIGH",
+      "pred": "LOW",
+      "confidence": 0.9,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "63d3fd6116541b5031bd4a4d",
+      "gold": "MEDIUM",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "6388fabfdce4b259e37e9495",
+      "gold": "MEDIUM",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "5ea0f8b65669f80008176bec",
+      "gold": "MEDIUM",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "63bed6e176fba857a47fbaff",
+      "gold": "LOW",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "5d4a03a7278a80001a4fa9df",
+      "gold": "LOW",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 1
+    },
+    {
+      "id": "633599d83df1823b08ae2e61",
+      "gold": "MEDIUM",
+      "pred": "LOW",
+      "confidence": 0.9,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "5c43517c8fefb60001c447fe",
+      "gold": "HIGH",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "6266a95d927943d0147dc188",
+      "gold": "MEDIUM",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "610ae6d0823d797a7fd61f39",
+      "gold": "LOW",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "5fc3d41149c0c8728f07b95b",
+      "gold": "LOW",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "62c8c2d71e87b86722f0215b",
+      "gold": "MEDIUM",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "611eb5db46ee495d60b16aae",
+      "gold": "HIGH",
+      "pred": "LOW",
+      "confidence": 0.9,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "60c10acc73ff7d406c3d940d",
+      "gold": "HIGH",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "629fa67324464cea314c50fc",
+      "gold": "LOW",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "5e92ce0be2bcb3600ed93730",
+      "gold": "MEDIUM",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "606a3cf263a18869ac8ee0ed",
+      "gold": "LOW",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "60fc9ce95a59b3400b38e2a7",
+      "gold": "LOW",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "5f47f0dd26b052111e2d323b",
+      "gold": "HIGH",
+      "pred": "LOW",
+      "confidence": 0.9,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "6117ae23774b3ff0f9e08052",
+      "gold": "MEDIUM",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "637aa193015973b5f2ee4dd7",
+      "gold": "HIGH",
+      "pred": "LOW",
+      "confidence": 0.9,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "608f377a1d065fa7240de113",
+      "gold": "HIGH",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "5f63d462fb4c4713b69d4bb7",
+      "gold": "LOW",
+      "pred": "LOW",
+      "confidence": 0.9,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "60f1ddf2ba77ba7c771c936c",
+      "gold": "HIGH",
+      "pred": "LOW",
+      "confidence": 0.9,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "5e27727328b7b698b037ee6c",
+      "gold": "LOW",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "60fd6c8ebd0c3ae3dd0eb2ac",
+      "gold": "HIGH",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "6266a87a7adacd7a91cabc93",
+      "gold": "HIGH",
+      "pred": "LOW",
+      "confidence": 0.9,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "63370d52f83532277ab354a4",
+      "gold": "MEDIUM",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "594ad91fa6fb8200018f720c",
+      "gold": "MEDIUM",
+      "pred": "LOW",
+      "confidence": 0.9,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "631852710b123742dcc28cb8",
+      "gold": "LOW",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "5ecdcc5497268a15bfa8c04e",
+      "gold": "LOW",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "628e987eb6b92cdc713ee965",
+      "gold": "LOW",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "63615326bf65aea8fab33ef2",
+      "gold": "LOW",
+      "pred": "LOW",
+      "confidence": 0.9,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "611622ddd8be1ac51298cb89",
+      "gold": "LOW",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "5c6d5477e8833000015244ad",
+      "gold": "HIGH",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "5cc1e9161758c700138de977",
+      "gold": "LOW",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "6398f1427f8e049a84ab3522",
+      "gold": "HIGH",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "5f8275c36d72281a1c8a2927",
+      "gold": "HIGH",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "6337b9604370dd57643b81a0",
+      "gold": "LOW",
+      "pred": "LOW",
+      "confidence": 0.9,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "615374d9fd9b41728babd974",
+      "gold": "HIGH",
+      "pred": "LOW",
+      "confidence": 0.9,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "62f1b4c7dfbde02b952a98c2",
+      "gold": "HIGH",
+      "pred": "LOW",
+      "confidence": 0.9,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "5f1c72e25a26d503c77bfdc9",
+      "gold": "MEDIUM",
+      "pred": "LOW",
+      "confidence": 0.9,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "607226ef2df05dd596a390f2",
+      "gold": "HIGH",
+      "pred": "LOW",
+      "confidence": 0.9,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "6296cc20de63a753209d7d02",
+      "gold": "HIGH",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    },
+    {
+      "id": "62825aef9d9d5544867a6fc0",
+      "gold": "LOW",
+      "pred": "LOW",
+      "confidence": 0.95,
+      "missing_transcript_files": 0
+    }
+  ]
+}

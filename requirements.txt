@@ -1,0 +1,54 @@
+# AVI2026 Track2（g_level 分类 + 多模态特征）依赖；骨干源自 2025 冠军 365Aspects，本仓库为独立工程名
+#
+# --- PyTorch 必须先成对安装（同一 CUDA 等级或全 CPU），勿混装 ---
+# 若 import torch 报 libtorch_cuda.so: undefined symbol: nccl* ：
+#   多为「CUDA 版 torch」与运行时 NCCL/CUDA 栈不一致，或 LD_LIBRARY_PATH 抢先加载了旧 libnccl。
+#   pip 显示 torch 为 CUDA 版而 torchvision/torchaudio 为 +cpu 时，也属于异常混装，应强制重装三件套。
+# 建议新建 conda 环境后再装；不要指望「pip install -r」在已损坏的 base 里自动修好（会显示 already satisfied）。
+# 【推荐·根本规避 NCCL】独立 venv + 仅 CPU 版 torch（不加载 libtorch_cuda.so）：
+#   python3 tools/bootstrap_isolated_cpu_env.py
+#   source .venv_glevel_cpu/bin/activate
+#   export PYTHON="$PWD/.venv_glevel_cpu/bin/python"
+#   bash vote_train_glevel.sh
+# 优先用上一行 Python 引导，避免 bash 脚本经 Windows 同步后出现 CRLF 导致 Linux 报错。
+# 备选：bash tools/bootstrap_isolated_cpu_env.sh
+# 其余依赖见 requirements-core.txt（由脚本自动 pip install）。
+# 全 CPU（手动、仍在当前环境）示例：
+#   pip install --force-reinstall torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+# GPU 示例（按节点 CUDA 改 cu124 / cu126 等，见 https://pytorch.org）：
+#   pip install --force-reinstall torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
+# 然后再：pip install -r requirements.txt（若仍冲突可先注释掉下面三行，只装其余依赖）
+#
+# 安装：pip install -r requirements.txt
+
+torch
+# torchvision≥0.20 才有 torchvision.io；extract_text 需要。勿保留 0.2.0；Py3.13 建议单独 conda env + python3.12 装成对 torch/torchvision。
+torchvision>=0.20.0
+torchaudio
+tensorboard
+opencv-python
+soundfile
+transformers>=4.36.0
+accelerate
+safetensors
+numpy
+pandas
+scikit-learn
+tqdm
+matplotlib
+
+# 可选：音频分析（若不用 soundfile 读时长可用 librosa）
+librosa
+
+# 原 requirement.txt 中的工具（按需保留）
+gdown
+requests
+imageio[ffmpeg]
+omegaconf
+ffmpeg-python
+gradio
+spaces
+moviepy
+
+# VideoMAE / ViT 常用依赖（部分环境需要）
+einops

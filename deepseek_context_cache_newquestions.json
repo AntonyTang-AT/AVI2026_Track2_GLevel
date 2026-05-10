@@ -1,0 +1,14 @@
+{
+  "sig": "3e54fa16eba2161b",
+  "config": {
+    "per_class_train": 2,
+    "per_class_val": 1,
+    "max_chars": 480,
+    "sample_seed": 42,
+    "train_csv": "/data/Super-Lu/dataset/train_data.csv",
+    "val_csv": "/data/Super-Lu/dataset/val_data.csv"
+  },
+  "model": "deepseek-v4-flash",
+  "rubric_summary": "G-level 1 responses are brief, vague, and lack depth. They often contain incomplete thoughts, generic statements, and minimal self-reflection. Answers are simple, with little elaboration or concrete examples. Level 2 responses are moderate in length and detail. They show some self-awareness and reflection but remain somewhat general or formulaic. Examples may include personal traits or strategies but lack specific, nuanced analysis. Level 3 responses are detailed and reflective, demonstrating higher-order thinking. They provide specific examples, articulate reasoning, consider multiple perspectives, and show adaptability or problem-solving. Answers are coherent, insightful, and exhibit a deeper understanding of the scenarios.",
+  "few_shot_chars": 23995
+}

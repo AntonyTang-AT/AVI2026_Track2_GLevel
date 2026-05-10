@@ -1,0 +1,15 @@
+{
+  "sig": "6cc13fa7aa9c1571",
+  "config": {
+    "per_class_train": 2,
+    "per_class_val": 1,
+    "max_chars": 480,
+    "sample_seed": 42,
+    "train_csv": "/data/Super-Lu/dataset/train_data.csv",
+    "val_csv": "/data/Super-Lu/dataset/val_data.csv",
+    "three_phase": true
+  },
+  "model": "deepseek-v4-flash",
+  "rubric_summary": "LOW: Answers are vague, rambling, or off-topic. Lack concrete examples or clear structure. Responses often incomplete or repetitive. MEDIUM: Answers are moderately structured and relevant. Provide general examples but lack depth or specificity. Show some self-awareness but remain broad. HIGH: Answers are concise, specific, and directly address the question. Demonstrate clear strategies, self-awareness, and professional insight. Responses are well-organized and reflective.",
+  "few_shot_chars": 12036
+}

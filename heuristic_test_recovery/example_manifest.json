@@ -1,0 +1,35 @@
+{
+  "comment": "accuracy 建议写成字符串避免 JSON 浮点误差；也可用 accuracy_pct / hits 覆盖。",
+  "hit_policy": "nearest",
+  "_hit_policy_help": "nearest=与声明准确率最接近的 k/n；half_up=Decimal(acc)*n 四舍五入；floor=下取整（如 0.46923*130→60）。若平台公布「正确条数」请直接用 hits。",
+  "lambda_agreement": 0.06,
+  "lambda_plurality": 0.05,
+  "lambda_balance": 0.004,
+  "proposal_bias": 0.5,
+  "_prior_note": "plurality=高重合众票加权；balance=三类条数贴近均衡；proposal_bias=翻转优先挑低重合位。可与 validation 分布一致的 balance_counts:[44,43,43]",
+  "freeze_unanimous": true,
+  "output_csv": "heuristic_test_recovery/example_out/recovered_from_five.csv",
+  "files": [
+    {
+      "csv": "external/submissions_peer/submission1_0.53077.csv",
+      "accuracy": "0.53077"
+    },
+    {
+      "csv": "external/submissions_peer/submission2_0.50769.csv",
+      "accuracy": "0.50769"
+    },
+    {
+      "csv": "external/submissions_peer/submission5_0.55385.csv",
+      "accuracy": "0.55385"
+    },
+    {
+      "csv": "external/submissions_peer/submission_0.53846.csv",
+      "accuracy": "0.53846"
+    },
+    {
+      "csv": "external/submissions_peer/submission_masswinner_S_plateau_ln_seed28.csv",
+      "accuracy": "0.46923",
+      "note": "主提交 masswinner；若你认为命中须为 floor 乘积则用 hit_policy=floor 或写 hits"
+    }
+  ]
+}

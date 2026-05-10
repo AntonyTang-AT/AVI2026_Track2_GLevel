@@ -1,0 +1,31 @@
+label,file,val_acc_official_64,val_acc_note,test_n,test_glevel_1,test_glevel_2,test_glevel_3,test_123_counts,test_123_pct,test_glevel_1_pct,test_glevel_2_pct,test_glevel_3_pct,overlap_vs_deepseek_zyn,overlap_n
+DeepSeek_zyn_majority_vote,deepseek_ens_r3_vote_zyn.json,0.3958,interactive_pipeline_val（三跑平均）,130,36,69,25,36/69/25,27.7%/53.1%/19.2%,27.7,53.1,19.2,1.0,130
+submission_masswinner_S_ref_cosine_seed5,submission_masswinner_S_ref_cosine_seed5.csv,0.5873,,130,42,31,57,42/31/57,32.3%/23.8%/43.8%,32.3,23.8,43.8,0.4231,130
+submission_0.53846,submission_0.53846.csv,,仓库内未解析到 val_acc,130,38,38,54,38/38/54,29.2%/29.2%/41.5%,29.2,29.2,41.5,0.4,130
+submission_batch_infer_phaseB_coral_bal_s42,submission_batch_infer_phaseB_coral_bal_s42.csv,0.5079,,130,46,28,56,46/28/56,35.4%/21.5%/43.1%,35.4,21.5,43.1,0.4,130
+submission_phaseB_coral_bal_seed42,submission_phaseB_coral_bal_seed42.csv,0.5079,,130,46,28,56,46/28/56,35.4%/21.5%/43.1%,35.4,21.5,43.1,0.4,130
+submission_batch_infer_phaseB_ce_bal_s42,submission_batch_infer_phaseB_ce_bal_s42.csv,0.5238,,130,31,59,40,31/59/40,23.8%/45.4%/30.8%,23.8,45.4,30.8,0.3846,130
+submission_batch_infer_phaseB_ce_macrof1_s42,submission_batch_infer_phaseB_ce_macrof1_s42.csv,0.5238,,130,31,59,40,31/59/40,23.8%/45.4%/30.8%,23.8,45.4,30.8,0.3846,130
+submission_phaseB_ce_bal_seed42,submission_phaseB_ce_bal_seed42.csv,0.5238,,130,31,59,40,31/59/40,23.8%/45.4%/30.8%,23.8,45.4,30.8,0.3846,130
+submission_phaseB_ce_macrof1_seed42,submission_phaseB_ce_macrof1_seed42.csv,0.5238,,130,31,59,40,31/59/40,23.8%/45.4%/30.8%,23.8,45.4,30.8,0.3846,130
+submission2_0.50769,submission2_0.50769.csv,,仓库内未解析到 val_acc,130,36,35,59,36/35/59,27.7%/26.9%/45.4%,27.7,26.9,45.4,0.3692,130
+submission_masswinner_S_ref_plateau_seed99,submission_masswinner_S_ref_plateau_seed99.csv,0.5556,,130,34,27,69,34/27/69,26.2%/20.8%/53.1%,26.2,20.8,53.1,0.3538,130
+submission_batch_infer_phaseB_ce_classweight_s42,submission_batch_infer_phaseB_ce_classweight_s42.csv,0.4921,,130,31,27,72,31/27/72,23.8%/20.8%/55.4%,23.8,20.8,55.4,0.3462,130
+submission_phaseB_ce_bal_classweight_auto_seed42,submission_phaseB_ce_bal_classweight_auto_seed42.csv,0.4921,,130,31,27,72,31/27/72,23.8%/20.8%/55.4%,23.8,20.8,55.4,0.3462,130
+submission_masswinner_S_ref_plateau_seed10,submission_masswinner_S_ref_plateau_seed10.csv,0.5714,,130,85,18,27,85/18/27,65.4%/13.8%/20.8%,65.4,13.8,20.8,0.3385,130
+submission1_0.53077,submission1_0.53077.csv,,仓库内未解析到 val_acc,130,27,15,88,27/15/88,20.8%/11.5%/67.7%,20.8,11.5,67.7,0.3308,130
+submission_batch_infer_phaseC_pseudo_finetune_s37,submission_batch_infer_phaseC_pseudo_finetune_s37.csv,0.5238,,130,64,17,49,64/17/49,49.2%/13.1%/37.7%,49.2,13.1,37.7,0.3308,130
+submission_ours_seed37_best_nanbeige,submission_ours_seed37_best_nanbeige.csv,0.5873,,130,64,17,49,64/17/49,49.2%/13.1%/37.7%,49.2,13.1,37.7,0.3308,130
+submission5_0.55385,submission5_0.55385.csv,,仓库内未解析到 val_acc,130,42,18,70,42/18/70,32.3%/13.8%/53.8%,32.3,13.8,53.8,0.3231,130
+submission_masswinner_S_ref_cosine_seed10,submission_masswinner_S_ref_cosine_seed10.csv,0.5714,,130,54,25,51,54/25/51,41.5%/19.2%/39.2%,41.5,19.2,39.2,0.3231,130
+submission_phaseA_ensemble_seed37_10_99,submission_phaseA_ensemble_seed37_10_99.csv,0.5556,,130,46,13,71,46/13/71,35.4%/10.0%/54.6%,35.4,10.0,54.6,0.3231,130
+submission_masswinner_S_plateau_ln_seed28,submission_masswinner_S_plateau_ln_seed28.csv,0.6032,,130,45,36,49,45/36/49,34.6%/27.7%/37.7%,34.6,27.7,37.7,0.3077,130
+submission_vote_majority,submission_vote_majority.csv,,仓库内未解析到 val_acc,130,0,33,97,0/33/97,0.0%/25.4%/74.6%,0.0,25.4,74.6,0.3,130
+pseudo_iter2_peers4_top6_mass,test_pseudo_iter2_peers4_inferbias_top6_mass.csv,,无单一模型 val,130,35,4,91,35/4/91,26.9%/3.1%/70.0%,26.9,3.1,70.0,0.2923,130
+submission_batch_infer_seed37_archive_inferbias070,submission_batch_infer_seed37_archive_inferbias070.csv,0.6032,,130,30,12,88,30/12/88,23.1%/9.2%/67.7%,23.1,9.2,67.7,0.2692,130
+submission_ours_seed37_inferbias_0_0p7_0,submission_ours_seed37_inferbias_0_0p7_0.csv,0.6032,,130,30,12,88,30/12/88,23.1%/9.2%/67.7%,23.1,9.2,67.7,0.2692,130
+submission_rerun_seed37_archive_inferbias070,submission_rerun_seed37_archive_inferbias070.csv,0.6032,,130,30,12,88,30/12/88,23.1%/9.2%/67.7%,23.1,9.2,67.7,0.2692,130
+submission_phaseA_seed37_tta8,submission_phaseA_seed37_tta8.csv,0.5873,,130,34,3,93,34/3/93,26.2%/2.3%/71.5%,26.2,2.3,71.5,0.2615,130
+submission_batch_infer_seed37_archive_S_ref_plateau,submission_batch_infer_seed37_archive_S_ref_plateau.csv,0.5873,,130,33,3,94,33/3/94,25.4%/2.3%/72.3%,25.4,2.3,72.3,0.2538,130
+submission_masswinner_S_ref_plateau_seed37,submission_masswinner_S_ref_plateau_seed37.csv,0.5873,,130,33,3,94,33/3/94,25.4%/2.3%/72.3%,25.4,2.3,72.3,0.2538,130
+submission_rerun_seed37_archive_plain,submission_rerun_seed37_archive_plain.csv,0.5873,,130,33,3,94,33/3/94,25.4%/2.3%/72.3%,25.4,2.3,72.3,0.2538,130

@@ -1,0 +1,47 @@
+官方测试集原始数据：/data/Super-Lu/dataset/test_data
+================================================================
+
+1) 目录里是什么
+   - 扁平存放的答题视频：{样本 id}_{q1..q6}_{generic|personality}.mp4
+   - 与工程内 MultimodalDataset 期望的「特征根目录」格式不同；代码只加载 .npy，不直接读 mp4。
+
+2) 工程期望的测试特征布局（与 train_feature / val_feature 同构）
+   在某个 FEAT_TEST 根下例如：
+     FEAT_TEST/video/*.npy
+     FEAT_TEST/audio/*.npy
+     FEAT_TEST/text/*.npy          （SigLIP 768 路线）
+   或 Nanbeige 路线：
+     FEAT_TEST/text_nb/*.npy       （2560 维，需与训练一致）
+   命名规则需与 dataset/baseline_dataset2_vote.py 中按 id、题号解析 .npy 的逻辑一致
+   （与现有 train_feature 下文件命名约定对齐即可）。
+
+3) 怎么「用起来」
+   步骤 A：用与训练相同的特征提取脚本，对 test_data 下 mp4（及对应音频/文本流程）
+           批量生成上述 .npy，输出到你选定目录，例如：
+             /data/Super-Lu/dataset/test_feature
+           （本仓库未内置从 mp4 到 512 维音/视频特征的提取脚本，需赛方或你们已有管线。）
+
+   步骤 B：推理前 export（示例，路径按你实际产出修改）：
+             export FEAT_TEST=/data/Super-Lu/dataset/test_feature
+             export TEST_CSV=/data/Super-Lu/dataset/test_data_basic_information.csv
+   Nanbeige 时还需：
+             export NANBEIGE_TEXT=1 TEXT_DIM=2560
+             export TEXT_TEST_DIR=/path/to/test/text_nb_npy   # 测试集 Nanbeige 特征目录
+   若工程根下存在 data/test_nb，glevel_paths.inc.sh 会默认用它作 TEXT_TEST_DIR。
+
+   步骤 C：加载 best 权重跑 vote_test_glevel.sh（或 train_task2_glevel.py --only_test），
+           生成 TEST_OUTPUT_CSV（submission）。
+   Nanbeige 训练若使用工程内 data/text_nb，则 vote_test 时必须显式 export：
+             TEXT_TRAIN_DIR=<REPO>/data/text_nb
+             TEXT_VAL_DIR=<REPO>/data/text_nb_val
+             TEXT_TEST_DIR=<REPO>/data/test_nb
+   一键脚本：bash tools/run_official_test_submit_nanbeige.sh
+
+4) 与当前默认配置的差异
+   tools/glevel_paths.inc.sh 里 FEAT_TEST 默认是 /data/AVI2026/test_feature。
+   使用 Super-Lu 官方测试特征时，务必显式 export FEAT_TEST=... 指向步骤 A 产出目录。
+
+5) 测试表 CSV
+   可使用仓库内 data/test_data_basic_information.csv，或与之一致的：
+   /data/Super-Lu/dataset/test_data_basic_information.csv
+   （列需含 id，与特征文件名中的 id 一致。）

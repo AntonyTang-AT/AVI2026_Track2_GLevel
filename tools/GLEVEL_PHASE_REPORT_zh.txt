@@ -1,0 +1,168 @@
+AVI2026 赛道二 g_level — 阶段性总结与下一步规划（数据与问题说明）
+================================================================
+生成说明：与 tools/glevel_plan_runbook.txt（阶段一至五）及 data/GLEVEL_README.txt 中的实现对照；
+实验数字来自同一条官方验证管线（赛方 train_data.csv / val_data.csv，val 过滤后 n=63）下的训练日志。
+
+----------------------------------------------------------------
+〇、从计划书哪一阶段切入、实际走了哪条主线
+----------------------------------------------------------------
+计划书阶段一（train_fixed / val_fixed，val_ratio≈0.15）用于「自划 val、调参更稳」；你后续与历史 ~51% 对齐时，
+**主评估仍挂在赛方 val（阶段一未替代官方划分）**，仅工具与默认参数沿用阶段一脚本。
+
+实际迭代主线可概括为：
+  · **阶段三（正则 / 早停 / Plateau）** + **README 多模态 preset**（cross_modal_attn、dropout、label_smoothing、
+    balanced_acc 选模、长早停与 min_epochs）→ 得到当前 **默认多模态基线（下表 A）**。
+  · **阶段二（类平衡）** 以两种形式试验：温和（sampler / MM_MEDIUM_BOOST）与强（manual CE + 关平衡采样 /
+    MM_MEDIUM_FOCUS），与阶段三叠加。
+  · **阶段四（text_gru）** 与多模态 **shared_mlp** 为不同架构分支；你当前报告以 **多模态** 为主。
+  · **阶段五前置 + 扩展**：多种子、K 折、时序 GRU/BiGRU、CORAL/SWA/TTA/SAM 等以消融脚本形式接入，部分组合已跑
+    对照（A/B/C）。
+
+----------------------------------------------------------------
+〇点一、最新一次运行简析（默认 vote_train_glevel_multimodal，无 MM_TEMPORAL / MM_MEDIUM_FOCUS）
+----------------------------------------------------------------
+日志要点：epochs_run=45，best_epoch=5，early_stop 触发；select_best=balanced_acc；val_pred_classes=3（未塌缩单类）。
+
+  val_ce=1.1305  val_acc=0.5397  val_macro_f1=0.4775  val_bal_acc=0.4976
+
+混淆矩阵（行=真值，列=预测）：
+  [[10,  3,  8]    # Low:21
+   [ 4,  3, 10]    # Medium:17
+   [ 3,  1, 21]]   # High:25
+
+逐类 recall：Low 10/21≈0.476，Medium 3/17≈0.176，High 21/25≈0.840。
+
+错分 29/63；主因：**Medium→High（10）**、**Low→High（8）** — 与 High recall 过高一致，模型倾向把中低档样本划到 High。
+
+结论：该次结果与历史「多模态基线 A」一致，仍是 **验证集上 acc / bal_acc 最优档**；弱点仍是 **Medium 召回过低**。
+
+predict_test 仍提示测试集过滤为空 → **FEAT_TEST（及测试侧各模态 .npy）未就绪**，与本轮训练质量无关。
+
+----------------------------------------------------------------
+一、计划书完成度核对（glevel_plan_runbook.txt）
+----------------------------------------------------------------
+阶段一  train/val 重划分（默认 val_ratio=0.15）
+  实现：tools/split_train_val.py 默认 --val_ratio 0.15；文档与 vote_train 提示勿与「官方 val 基线」混用。
+  状态：已完成。
+
+阶段二  类别平衡
+  实现：--class_weight manual + --class_weight_manual；或 --sampler_medium_boost；vote_train_glevel_multimodal.sh 中
+        MM_MEDIUM_FOCUS（强）/ MM_MEDIUM_BOOST（温和，保留 balanced_acc + 平衡采样）。
+  状态：已完成；新增 MM_MEDIUM_BOOST 与计划书「或保留平衡采样，仅放大 Medium」一致。
+
+阶段三  正则与调度
+  实现：多模态 preset 含 weight_decay、mlp_dropout、label_smoothing、modality_dropout、Plateau、early_stop_patience/
+        early_stop_min_epochs（vote_train_glevel.sh 末尾传参，会覆盖 GLEVEL_OPT 中同名早停项）。
+  状态：已完成。注意：若 GLEVEL_OPT 写 --early_stop_patience 25，仍可能被 vote_train_glevel.sh 行末默认值覆盖；
+        应使用 export EARLY_STOP_PATIENCE=25（runbook 已说明）。
+
+阶段四  文本时序 / 文本 MLP
+  实现：--glevel_arch text_gru / text_mlp；与多模态 shared_mlp 并列可选。
+  状态：已完成（与多模态为不同基线，勿在同一脚本混用 arch）。
+
+阶段五前置  多种子
+  实现：tools/run_multi_seed_multimodal.sh；日志聚合依赖 [metrics_line]。
+  状态：已完成。
+
+扩展（README / 代码）：跨模态注意力、时序 BiGRU+attn、CORAL、SWA、TTA、SAM、问题嵌入、temporal_step_dropout、
+K 折脚本等 — 均已接入 train_task2_glevel.py 与 tools/run_*。
+
+----------------------------------------------------------------
+二、数据与标签（固定上下文，便于解读指标）
+----------------------------------------------------------------
+训练集：官方 train 经特征过滤后 n=450（日志示例：Low 142，Medium 147，High 161；int_encoding=one）。
+验证集：官方 val 经「每题 audio/video/text 齐全」过滤后 n=63（示例：Low 21，Medium 17，High 25）。
+  含义：单 epoch 上 acc 的标准误粗算 sqrt(p(1-p)/63)：若 p≈0.54，约 ±6.3%；2 个百分点差异可能仅为抽样噪声。
+
+测试集：日志中曾出现 FEAT_TEST 下 130/130 行被剔除 → 无法 predict_test；与模型质量无关，属路径/特征未就绪。
+
+----------------------------------------------------------------
+三、已记录的三组多模态实验（同一 val、可比）
+----------------------------------------------------------------
+以下数字来自你提供的训练日志；**A 行已与「最新一次运行」逐字对齐**。
+
+| 代号 | 配置要点 | best_epoch | val_acc | macro_F1 | bal_acc | val_ce(最佳点) | Low_recall | Med_recall | High_recall | 简要解读 |
+|------|-----------|------------|---------|----------|---------|----------------|------------|------------|-------------|----------|
+| A | 多模态 preset，无 MM_TEMPORAL | 5 | **0.5397** | **0.4775** | **0.4976** | **1.1305** | 0.476 | 0.176 | 0.840 | acc/bal_acc 最优档；严重偏 High；错分主因 Med→High(10)、Low→High(8) |
+| B | + MM_TEMPORAL | ~8 | 0.492 | 0.450 | 0.468 | ~1.19 | （略） | Med 仍弱 | 时序未提升 acc |
+| C | B + MM_BIDIRECTIONAL + MM_MEDIUM_FOCUS | ~30 | 0.476 | 0.470 | 0.472 | ~1.88 | 0.52 | 0.41 | 0.48 | 三类 recall 更均衡；acc / macro_F1 低于 A |
+
+**当前「最好」如何定义**
+  · 若以 **val_acc / balanced_acc / 训练稳定性（早、准）** 为准：**组合 A（默认多模态 preset）** 仍是迄今最强。
+  · 若以 **三类 recall 不要严重偏 High、尤其要救 Medium** 为准：**组合 C** 更好，代价是 acc 掉约 6～7 个百分点、macro_F1 仍略低于 A。
+
+量化对比（C 相对 A）：
+  val_acc：0.5397→0.476（约 −6.4pt）；Medium recall：0.176→0.41（+0.23）；High recall：0.840→0.48（−0.36）。
+  macro_F1：0.4775 vs 0.470（A 仍略高）。
+
+错分结构（C 的 val_summary）：33/63 错分；主要桶为 High→Medium(7)、High→Low(6)、Medium→High(5)、Low→High(5)、
+Medium→Low(5)、Low→Medium(5)。说明决策边界在三类间仍大量重叠，非单一方向错误。
+
+训练动态（C）：前若干 epoch 出现 val_pred_classes=1 与 WARNING，属优化初期 logits 塌缩到单类常见现象，
+随后类数恢复为 3；best_epoch=30 表明较 A（epoch 5）更晚才达到验证最优，模型更难训、验证曲线更噪。
+
+----------------------------------------------------------------
+四、问题机制说明（为何「加东西」反而 acc 掉）
+----------------------------------------------------------------
+1) 验证集极小（n=63）
+   早停与 select_best 对个别样本敏感；best_epoch 在不同 run 间波动大是预期现象。
+
+2) 指标冲突
+   select_best=balanced_acc（A）与 macro_f1 + manual 权重（C）优化的目标不同；manual 权重与关闭平衡采样会改变
+   梯度分布，往往压低「多数易分类（此处多为 High）」的置信度，从而拉低 acc 但抬高 Medium。
+
+3) 时序模块容量与数据量
+   450 条样本、双向 GRU + 注意力 + 跨模态 Transformer 参数量偏大，易过拟合或优化陷入较差区域；B 相对 A 的整体
+   下降符合「小数据上复杂归纳偏置未必有益」的经验。
+
+4) val_ce 不可跨配置直接比
+   label_smoothing、class_weight 均改变 CE 标度；C 在 best 点 val_ce≈1.88 高于 A 的约 1.13 不代表「更差」，
+   仅说明损失数值不可横向对比。
+
+5) 测试链路
+   若 FEAT_TEST 或测试 id 的 Nanbeige 文本缺失，则无法生成提交文件；需在服务器上先跑 tools/preflight_test_submission.sh
+   或 route_a 第四节。
+
+----------------------------------------------------------------
+五、推荐下一步（按优先级）
+----------------------------------------------------------------
+P0  打通测试特征：确认 FEAT_TEST 与 TEXT_TEST_DIR 对 130 个测试 id 的 6 题×模态覆盖，否则无法真实迭代提交策略。
+
+P1  缓解 n=63 方差：运行 tools/run_kfold_multimodal_plus.sh 或 run_multi_seed_multimodal.sh，用均值±方差选配置，
+    避免被单次 val 误导。
+
+P2  在 A 与 C 之间插值：使用 MM_MEDIUM_BOOST=1（sampler_medium_boost 默认 1.5）保留 A 的 select_best 与平衡采样，
+    观察 Medium recall 是否上升而 acc 下降少于 C。
+
+P3  时序消融：仅在 K 折上对比 MM_TEMPORAL 开/关；若稳定为负，暂时关闭时序，把算力留给特征与集成。
+
+P4  赛方指标对齐：若最终评测为 accuracy，select_best 优先 val_ce 或 balanced_acc，并谨慎叠加 medium 权重。
+
+P5  上游特征：检查转写质量、题级对齐与 hand/音视特征版本；可分性上限往往由特征决定。
+
+----------------------------------------------------------------
+六、相关文件
+----------------------------------------------------------------
+  tools/glevel_plan_runbook.txt     — 计划书运行说明（已含第六节多模态对照）
+  vote_train_glevel_multimodal.sh  — MM_TEMPORAL / MM_BIDIRECTIONAL / MM_MEDIUM_FOCUS / MM_MEDIUM_BOOST
+  data/GLEVEL_README.txt            — 完整参数与工具脚本索引
+  train_task2_glevel.py             — __version__ 与 CLI 真源
+
+----------------------------------------------------------------
+七、阶段性总结（问题与突破方向，一纸版）
+----------------------------------------------------------------
+已用改进（相对最初基线）：赛方 train/val 多模态 SharedMLPwEnsemble；cross_modal_attn；dropout / label_smoothing /
+  weight_decay；WeightedRandomSampler；Plateau + 长早停与 early_stop_min_epochs；Nanbeige 文本维（与服务器 export 一致）；
+  可选时序 BiGRU+attn、CORAL、SWA、TTA、SAM、K 折/多种子脚本等（见 README）。
+
+效果：在 n_val=63 上，**默认多模态（A）** 重复得到 **acc≈53.97%、bal_acc≈49.76%、macro_f1≈47.75%**；**时序（B）** 整体
+  下降；**强 Medium 聚焦（C）** 拉高 Medium recall 但 acc 与 macro_F1 低于 A。
+
+当前主要问题：
+  (1) **偏类**：A 下 High recall 84%、Medium 仅 17.6%，错分集中在 Med→High、Low→High。
+  (2) **验证规模小**：63 条使单次 run 方差大，需 K 折/多种子再下结论。
+  (3) **测试链路断**：FEAT_TEST 等导致 predict_test 为空，无法迭代提交。
+  (4) **目标冲突**：抬 Medium 的配置会伤 acc，需按赛方指标选折中（如 MM_MEDIUM_BOOST）。
+
+突破重点：P0 补全测试特征；P1 K 折/多种子；P2 A 与 C 之间试 MM_MEDIUM_BOOST；P3 时序仅在有统计增益时保留；
+  P4 上游特征与转写质量。

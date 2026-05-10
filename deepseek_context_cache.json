@@ -1,0 +1,14 @@
+{
+  "sig": "9583689436f9aff5",
+  "config": {
+    "per_class_train": 2,
+    "per_class_val": 1,
+    "max_chars": 480,
+    "sample_seed": 42,
+    "train_csv": "/data/Super-Lu/dataset/train_data.csv",
+    "val_csv": "/data/Super-Lu/dataset/val_data.csv"
+  },
+  "model": "deepseek-v4-flash",
+  "rubric_summary": "LOW: Answers are brief, vague, or truncated. The speaker often repeats ideas, fails to complete thoughts, or provides minimal elaboration. Responses lack specific examples or self-reflection. Communication is choppy and lacks structure.\n\nMEDIUM: Answers are moderately detailed and coherent but may be generic or lack depth. The speaker provides some context but often stays on the surface. Examples are present but may be underdeveloped. Responses show an attempt at reflection but are not fully insightful.\n\nHIGH: Answers are well-developed, specific, and coherent. The speaker uses concrete examples and demonstrates self-awareness. Responses are complete, with clear structure and logical flow. The speaker shows ability to reflect on experiences and articulate nuanced perspectives.",
+  "few_shot_chars": 19528
+}

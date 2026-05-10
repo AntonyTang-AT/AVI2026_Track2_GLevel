@@ -1,0 +1,30 @@
+AI 标注（DeepSeek）主要路径（仓库根 = AVI2026_Track2_GLevel）
+
+官方 train/val/test 标签 CSV 镜像：`data/superlu_official/`（与宿主机 `/data/Super-Lu/dataset/*.csv` 同步，见 `tools/sync_superlu_official_csv.sh`）。
+
+约定：提交 CSV 的 ``g_level_pred``、DeepSeek JSON 的 ``overall_glevel`` 均为赛方整数 **1 / 2 / 3**。遗留 0/1/2 或 LOW/MEDIUM/HIGH 可用：
+``python3 tools/migrate_legacy_glevel_artifacts_to_123.py``（可加 ``--dry-run``）批量转换。
+
+[zyn 完整转写 + 3× 管线多数票，已完成示例]
+- deepseek_ens_r3_vote_zyn.json
+- deepseek_ens_r3_vote_zyn_run0.json … run2.json
+- deepseek_ens_r3_report_zyn_run*.json
+- deepseek_ens_r3_run_zyn.log
+
+[中性校准 + 更丰富训练默认 + 3× 管线，输出文件名]
+- deepseek_ens_neutral_r3_vote_zyn.json（多数票）
+- deepseek_ens_neutral_r3_report_zyn_run*.json / deepseek_ens_neutral_r3_vote_zyn_run*.json
+- deepseek_ens_neutral_r3_run_zyn.log
+
+[加权伪标签]
+- external/submissions_peer/test_pseudo_weighted_peers4_plateau_ln28.csv
+
+[通宵 GPU 扫参]
+- experiments/gpu_combo_sweep/overnight_<时间戳>/
+  - combo_sweep_metrics.csv
+  - <combo>/seed<N>/submission.csv best.pth train.log
+  - ranking_triple.tsv（扫参结束后生成）
+
+[通宵总日志]
+- experiments/overnight_<时间戳>.log
+- 若用 nohup：experiments/overnight_outer.log（自行指定）
